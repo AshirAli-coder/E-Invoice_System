@@ -95,7 +95,7 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
             <div>
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Information</label>
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Name</label>
                 <select asp-for="seller_name" class="form-control" required id="sellerSelect" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; margin-bottom: 1rem;">
                     <option value="">-- Select Seller --</option>
                     @foreach (var s in sellers)
@@ -103,18 +103,24 @@
                         <option value="SATA Technologies" data-contact="@s.contact" data-address="@s.address">SATA Technologies (@s.email)</option>
                     }
                 </select>
+                
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Contact</label>
                 <input asp-for="seller_contact" id="sellerContact" placeholder="Seller Contact" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem;" />
+                
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Address</label>
                 <textarea asp-for="seller_address" id="sellerAddress" placeholder="Seller Address" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); resize: vertical;" rows="2"></textarea>
             </div>
             <div>
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Payment & Status</label>
-                <select asp-for="payment" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Payment Method</label>
+                <select asp-for="payment" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; margin-bottom: 1rem; box-sizing: border-box; display: block; font-family: inherit; outline: none;">
                     <option value="Cash">Cash</option>
                     <option value="Bank Transfer">Bank Transfer</option>
                     <option value="Online">Online</option>
                     <option value="Credit">Credit</option>
                 </select>
-                <select asp-for="status" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white;">
+
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Invoice Status</label>
+                <select asp-for="status" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; box-sizing: border-box; display: block; font-family: inherit; outline: none;">
                     <option value="Pending">Pending</option>
                     <option value="Paid">Paid</option>
                     <option value="Cancelled">Cancelled</option>
@@ -186,7 +192,7 @@
             const item = {
                 id: 0, // Not a specific product ID if it's from a sale record
                 name: sale.prod_name_service,
-                unit: sale.qty_unit_type,
+                // unit: sale.qty_unit_type,
                 qty: parseFloat(sale.qty_unit_type.split(' ')[0]) || 1,
                 price: sale.price,
                 discount: sale.discount,

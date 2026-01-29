@@ -1,37 +1,63 @@
 @{
-    ViewData["Title"] = "Login";
     Layout = null;
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - E-Invoice System</title>
-    <link rel="stylesheet" href="/css/login.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - E-Invoice System</title>
+    <link rel="stylesheet" href="~/css/login.css">
 </head>
 <body>
-
-<div class="login-box">
-    <h2>Login</h2>
-    <p class="subtitle">Welcome back to E-Invoice System</p>
-
-    <form asp-action="Login" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="form-group">
-            <label>Email Address</label>
-            <input name="email" type="email" required />
+    <div class="login-wrapper">
+        <!-- Left Panel with Background -->
+        <div class="left-panel">
+            <div class="overlay-content">
+                <h2>"Empowering Business through Technology - SATA"</h2>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Password</label>
-            <input name="password" type="password" required />
+        <!-- Right Panel with Login Form -->
+        <div class="right-panel">
+            <div class="login-card">
+                <!-- Logo -->
+                <div class="logo-section">
+                    <img src="/images/sata-logo.png" alt="SATA Technologies" class="logo" />
+                </div>
+
+                <!-- Welcome Text -->
+                <div class="welcome-section">
+                    <h1>Welcome Back !</h1>
+                    <p>Sign in to continue</p>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 1rem; text-align: center; list-style: none; padding: 0;"></div>
+
+                <!-- Login Form -->
+                <form asp-action="Login" method="post" class="login-form">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter password" required />
+                    </div>
+
+                    <button type="submit" class="btn-login" style="margin-top: 1rem;">Login</button>
+                </form>
+
+                <!-- Footer -->
+                <div class="login-footer">
+                    <p>© 2025 E-Invoice System. Crafted with ❤️ by SATA Technologies Pvt. Ltd.</p>
+                </div>
+            </div>
         </div>
-
-        <button type="submit" class="btn-submit">Login</button>
-    </form>
-
-</div>
+    </div>
 </body>
 </html>

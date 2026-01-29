@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using E_Invoice_system.Data;
 using E_Invoice_system.Models;
 using System.Linq;
@@ -23,17 +23,29 @@ namespace E_Invoice_system.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HttpPost]
+        
         public IActionResult Login(string email, string password)
         {
-            var user = _context.users.FirstOrDefault(u => u.email == email && u.password == password);
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError("", "Email and password are required.");
+                return View();
+            }
+
+            var user = _context.users
+                .FirstOrDefault(u => u.email == email && u.password == password);
+
             if (user != null)
             {
-                // Simple login - in a real app, use ASP.NET Core Identity or cookie authentication
+                // TEMP session (simple auth)
+                HttpContext.Session.SetString("UserEmail", user.email);
+
                 return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError("", "Invalid email or password.");
-            return RedirectToAction("Index", "Home");
+            return View(); // 🔥 Redirect nahi, View return karo
         }
 
         public IActionResult Logout()

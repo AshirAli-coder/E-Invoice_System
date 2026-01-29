@@ -5,33 +5,34 @@
         <div class="card-title">Add New Buyer</div>
     </div>
     
-    <form asp-action="Create" method="post" style="padding: 1.5rem;">
+    <form asp-action="Create" method="post" style="padding: 2rem;">
         @Html.AntiForgeryToken()
+        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem;">
             <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Full Name</label>
-                <input asp-for="name" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit;" placeholder="Enter buyer's full name" required />
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Full Name</label>
+                <input asp-for="name" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit; box-sizing: border-box;" placeholder="Enter buyer's full name" required />
                 <span asp-validation-for="name" style="color: #ef4444; font-size: 0.75rem;"></span>
             </div>
             <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Contact Number</label>
-                <input asp-for="contact" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit;" placeholder="Enter contact number" />
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Contact Number</label>
+                <input asp-for="contact" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit; box-sizing: border-box;" placeholder="Enter contact number" />
             </div>
         </div>
 
         <div style="margin-bottom: 1.5rem;">
-            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Email Address</label>
-            <input asp-for="email" type="email" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit;" placeholder="Enter email address" />
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Email Address</label>
+            <input asp-for="email" type="email" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit; box-sizing: border-box;" placeholder="Enter email address" />
         </div>
 
         <div style="margin-bottom: 1.5rem;">
-            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Address</label>
-            <textarea asp-for="address" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit; resize: vertical;" rows="3" placeholder="Enter physical address"></textarea>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Address</label>
+            <textarea asp-for="address" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit; resize: vertical; box-sizing: border-box;" rows="3" placeholder="Enter physical address"></textarea>
         </div>
 
         <div style="margin-bottom: 2rem;">
-            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">Status</label>
-            <select asp-for="status" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit; background: white;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Status</label>
+            <select asp-for="status" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); outline: none; font-family: inherit; background: white; box-sizing: border-box; display: block;">
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
             </select>

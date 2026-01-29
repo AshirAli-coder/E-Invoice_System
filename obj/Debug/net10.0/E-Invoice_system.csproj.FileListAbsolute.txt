@@ -320,7 +320,8 @@ D:\netcore\E-Invoice_system\bin\Debug\net10.0\runtimes\win-x64\native\Microsoft.
 D:\netcore\E-Invoice_system\bin\Debug\net10.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 D:\netcore\E-Invoice_system\obj\Debug\net10.0\E-Invoice_system.csproj.AssemblyReference.cache
 D:\netcore\E-Invoice_system\obj\Debug\net10.0\E-Invoic.08753401.Up2Date
-D:\netcore\E-Invoice_system\obj\Debug\net10.0\compressed\iuu60c21so-{0}-37ak2k6if9-37ak2k6if9.gz
 D:\netcore\E-Invoice_system\obj\Debug\net10.0\compressed\2lv90o6rja-{0}-u51ovsj1d1-u51ovsj1d1.gz
 D:\netcore\E-Invoice_system\bin\Debug\net10.0\NuGet.Config
 D:\netcore\E-Invoice_system\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+D:\netcore\E-Invoice_system\obj\Debug\net10.0\E-Invoice_system.sourcelink.json
+D:\netcore\E-Invoice_system\obj\Debug\net10.0\compressed\iuu60c21so-{0}-neiz6vtez6-neiz6vtez6.gz

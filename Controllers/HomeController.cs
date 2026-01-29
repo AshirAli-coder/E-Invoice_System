@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using E_Invoice_system.Models;
 using E_Invoice_system.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -20,18 +20,18 @@ namespace E_Invoice_system.Controllers
 
         public IActionResult Index()
         {
-            var totalInvoices = _context.invoices.Count();
-            var totalBuyers = _context.buyers.Count();
-            var totalProducts = _context.products_services.Count();
-            
-          
+            // COUNTS
+            ViewBag.TotalInvoices = _context.invoices.Count();
+            ViewBag.TotalBuyers = _context.buyers.Count();
+            ViewBag.TotalProducts = _context.products_services.Count();
 
-            ViewBag.TotalInvoices = totalInvoices;
-            ViewBag.TotalBuyers = totalBuyers;
-            ViewBag.TotalProducts = totalProducts;
-          
+            // ✅ TOTAL SALES AMOUNT
+            decimal totalSales = _context.sales
+                .Sum(s => (decimal?)s.total_price) ?? 0;
 
-            // Stats for charts
+            ViewBag.TotalSales = totalSales;
+
+            // Invoice Status Chart
             var invoiceStatusData = _context.invoices
                 .GroupBy(i => i.status ?? "Pending")
                 .Select(g => new { Status = g.Key, Count = g.Count() })
@@ -40,8 +40,7 @@ namespace E_Invoice_system.Controllers
             ViewBag.StatusLabels = invoiceStatusData.Select(x => x.Status).ToArray();
             ViewBag.StatusCounts = invoiceStatusData.Select(x => x.Count).ToArray();
 
-          
-           
+            // Recent invoices
             var recentInvoices = _context.invoices
                 .OrderByDescending(i => i.date)
                 .Take(5)
@@ -49,6 +48,7 @@ namespace E_Invoice_system.Controllers
 
             return View(recentInvoices);
         }
+
 
         public IActionResult Privacy()
         {
