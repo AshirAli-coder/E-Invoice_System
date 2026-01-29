@@ -4,7 +4,7 @@
     var sellers = ViewBag.Sellers as List<E_Invoice_system.Models.Sellers>;
 }
 
-<div class="card" style="max-width: 1200px; margin: 2rem auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border: none; border-radius: 12px;">
+<div class="card" style="max-width: 1400px; margin: 2rem auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border: none; border-radius: 12px;">
     <div class="card-header">
         <div class="card-title">Generate New Invoice</div>
     </div>
@@ -15,7 +15,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
             <div>
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Select Buyer</label>
-                <select asp-for="buyer_name" class="form-control" required id="buyerSelect" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white;">
+                <select asp-for="buyer_name" class="form-control" required id="buyerSelect" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; box-sizing: border-box; display: block; font-family: inherit; outline: none;">
                     <option value="">-- Choose Buyer --</option>
                     @foreach (var b in buyers)
                     {
@@ -26,6 +26,14 @@
             <div>
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Invoice Number</label>
                 <input asp-for="invoice_no" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border);" placeholder="INV-0001 (Auto)" />
+            </div>
+            <div>
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Buyer Contact</label>
+                <input asp-for="buyer_contact" id="buyerContact" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border);" placeholder="Buyer Contact" />
+            </div>
+            <div>
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Buyer Address</label>
+                <input asp-for="buyer_address" id="buyerAddress" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border);" placeholder="Buyer Address" />
             </div>
         </div>
 
@@ -40,19 +48,19 @@
                     Add Selected to Invoice
                 </button>
             </div>
-            <div style="overflow-x: auto;">
+            <div>
                 <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
                     <thead>
                         <tr style="text-align: left; border-bottom: 1px solid #fbcfe8;">
                             <th style="padding: 0.5rem; width: 40px;"></th>
-                            <th style="padding: 0.5rem;">Date</th>
+                            <th style="padding: 0.5rem; width: 120px; white-space: nowrap;">Date</th>
                             <th style="padding: 0.5rem;">Product / Service</th>
-                            <th style="padding: 0.5rem;">Qty/Unit_type</th>
-                            <th style="padding: 0.5rem;">price</th>
-                            <th style="padding: 0.5rem;">Discount</th>
-                            <th style="padding: 0.5rem;">Expiry Date</th>
-                            <th style="padding: 0.5rem;">Status</th>
-                            <th style="padding: 0.5rem;">Total</th>
+                            <th style="padding: 0.5rem; width: 100px;">Qty/Unit</th>
+                            <th style="padding: 0.5rem; width: 90px;">Price</th>
+                            <th style="padding: 0.5rem; width: 90px;">Discount</th>
+                            <th style="padding: 0.5rem; width: 130px; white-space: nowrap;">Expiry Date</th>
+                            <th style="padding: 0.5rem; width: 90px;">Status</th>
+                            <th style="padding: 0.5rem; width: 100px;">Total</th>
                         </tr>
                     </thead>
                     <tbody id="salesListBody">
@@ -68,13 +76,13 @@
         <table style="width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 2rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
             <thead>
                 <tr style="background: #f8fafc; text-align: left;">
-                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 45%;">Product/Service</th>
+                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 35%;">Product/Service</th>
                     <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 15%;">Qty/Unit_type</th>
-                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 15%;">Expiry Date</th>
-                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 15%;">Price</th>
-                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 15%;">Discount</th>
-                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 10%;">Total</th>
-                    <th style="padding: 1rem; width: 40px;"></th>
+                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 16%; white-space: nowrap;">Expiry Date</th>
+                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 11%;">Price</th>
+                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 11%;">Discount</th>
+                    <th style="padding: 1rem; font-size: 0.85rem; font-weight: 600; width: 11%;">Total</th>
+                    <th style="padding: 1rem; width: 60px;"></th>
                 </tr>
             </thead>
             <tbody id="itemsTableBody">
@@ -94,31 +102,26 @@
         <hr style="border: 0; border-top: 1px solid var(--border); margin: 2rem 0;" />
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-            <div>
+            <div style="grid-column: span 2;">
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Name</label>
-                <select asp-for="seller_name" class="form-control" required id="sellerSelect" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; margin-bottom: 1rem;">
+                <select asp-for="seller_name" class="form-control" required id="sellerSelect" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; box-sizing: border-box; display: block; font-family: inherit; outline: none; height: 82px;">
                     <option value="">-- Select Seller --</option>
                     @foreach (var s in sellers)
                     {
                         <option value="SATA Technologies" data-contact="@s.contact" data-address="@s.address">SATA Technologies (@s.email)</option>
                     }
                 </select>
-                
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Contact</label>
-                <input asp-for="seller_contact" id="sellerContact" placeholder="Seller Contact" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem;" />
-                
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Address</label>
-                <textarea asp-for="seller_address" id="sellerAddress" placeholder="Seller Address" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); resize: vertical;" rows="2"></textarea>
             </div>
             <div>
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Payment Method</label>
-                <select asp-for="payment" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; margin-bottom: 1rem; box-sizing: border-box; display: block; font-family: inherit; outline: none;">
+                <select asp-for="payment" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; box-sizing: border-box; display: block; font-family: inherit; outline: none;">
                     <option value="Cash">Cash</option>
                     <option value="Bank Transfer">Bank Transfer</option>
                     <option value="Online">Online</option>
                     <option value="Credit">Credit</option>
                 </select>
-
+            </div>
+            <div>
                 <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Invoice Status</label>
                 <select asp-for="status" class="form-control" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: white; box-sizing: border-box; display: block; font-family: inherit; outline: none;">
                     <option value="Pending">Pending</option>
@@ -126,7 +129,16 @@
                     <option value="Cancelled">Cancelled</option>
                 </select>
             </div>
+            <div style="grid-column: span 2;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Contact</label>
+                <input asp-for="seller_contact" id="sellerContact" placeholder="Seller Contact" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border);" />
+            </div>
+            <div style="grid-column: span 2;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem;">Seller Address</label>
+                <textarea asp-for="seller_address" id="sellerAddress" placeholder="Seller Address" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); resize: vertical;" rows="2"></textarea>
+            </div>
         </div>
+
 
         <div style="display: flex; gap: 1rem; margin-top: 3rem; justify-content: flex-end;">
             <button type="submit" class="btn-primary" style="padding: 0.8rem 2rem; font-weight: 600;">Create Invoice</button>
@@ -147,8 +159,15 @@
         
         if (!buyerName) {
             container.style.display = 'none';
+            document.getElementById('buyerContact').value = '';
+            document.getElementById('buyerAddress').value = '';
             return;
         }
+
+        const option = this.options[this.selectedIndex];
+        document.getElementById('buyerContact').value = option.getAttribute('data-contact') || '';
+        document.getElementById('buyerAddress').value = option.getAttribute('data-address') || '';
+
 
         fetch(`/Invoice/GetSalesByBuyer?buyerName=${encodeURIComponent(buyerName)}`)
             .then(res => res.json())
@@ -163,16 +182,16 @@
                             <td style="padding: 0.5rem; text-align: center;">
                                 <input type="checkbox" class="sale-checkbox" data-index="${index}" style="width: 16px; height: 16px;">
                             </td>
-                            <td style="padding: 0.5rem;">${sale.date}</td>
+                            <td style="padding: 0.5rem; width: 120px; white-space: nowrap;">${sale.date}</td>
                             <td style="padding: 0.5rem; font-weight: 600;">${sale.prod_name_service}</td>
-                            <td style="padding: 0.5rem;">${sale.qty_unit_type}</td>
-                            <td style="padding: 0.5rem;">$${sale.price.toFixed(2)}</td>
-                            <td style="padding: 0.5rem;">${sale.discount > 0 ? '$' + sale.discount.toFixed(2) : '-'}</td>
-                            <td style="padding: 0.5rem; color: var(--text-muted);">${sale.expiryDate}</td>
-                            <td style="padding: 0.5rem;">
+                            <td style="padding: 0.5rem; width: 100px;">${sale.qty_unit_type}</td>
+                            <td style="padding: 0.5rem; width: 90px;">$${sale.price.toFixed(2)}</td>
+                            <td style="padding: 0.5rem; width: 90px;">${sale.discount > 0 ? '$' + sale.discount.toFixed(2) : '-'}</td>
+                            <td style="padding: 0.5rem; width: 130px; white-space: nowrap; color: var(--text-muted);">${sale.expiryDate}</td>
+                            <td style="padding: 0.5rem; width: 90px;">
                                 <span style="padding: 0.2rem 0.5rem; background: #fce7f3; color: #be185d; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">${sale.status}</span>
                             </td>
-                            <td style="padding: 0.5rem; font-weight: 600; color: var(--primary);">$${sale.total_price.toFixed(2)}</td>
+                            <td style="padding: 0.5rem; width: 100px; font-weight: 600; color: var(--primary);">$${sale.total_price.toFixed(2)}</td>
                         `;
                         body.appendChild(tr);
                     });
@@ -223,7 +242,7 @@
             tr.innerHTML = `
                 <td style="padding: 0.75rem;">${item.name}</td>
                 <td style="padding: 0.75rem;">${item.qty} ${item.unit || ''}</td>
-                <td style="padding: 0.75rem; color: var(--text-muted);">${item.expiry || ''}</td>
+                <td style="padding: 0.75rem; white-space: nowrap; color: var(--text-muted);">${item.expiry || ''}</td>
                 <td style="padding: 0.75rem;">$${item.price.toFixed(2)}</td>
                 <td style="padding: 0.75rem;">$${item.discount.toFixed(2)}</td>
                 <td style="padding: 0.75rem; font-weight: bold;">$${item.total.toFixed(2)}</td>
