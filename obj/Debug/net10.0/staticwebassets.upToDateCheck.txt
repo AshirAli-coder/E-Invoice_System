@@ -65,7 +65,6 @@ wwwroot\lib\jquery\dist\jquery.slim.js
 wwwroot\lib\jquery\dist\jquery.slim.min.js
 wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
-D:\netcore\E-Invoice_system\wwwroot\lib\jquery\LICENSE.txt
 D:\netcore\E-Invoice_system\wwwroot\lib\jquery\dist\jquery.slim.min.map
 D:\netcore\E-Invoice_system\wwwroot\lib\jquery\dist\jquery.slim.min.js
 D:\netcore\E-Invoice_system\wwwroot\lib\jquery\dist\jquery.slim.js
@@ -127,5 +126,6 @@ D:\netcore\E-Invoice_system\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 D:\netcore\E-Invoice_system\wwwroot\js\site.js
 D:\netcore\E-Invoice_system\wwwroot\favicon.ico
 D:\netcore\E-Invoice_system\wwwroot\css\site.css
-D:\netcore\E-Invoice_system\wwwroot\css\dashboard.css
 D:\netcore\E-Invoice_system\wwwroot\css\login.css
+D:\netcore\E-Invoice_system\wwwroot\lib\jquery\LICENSE.txt
+D:\netcore\E-Invoice_system\wwwroot\css\dashboard.css

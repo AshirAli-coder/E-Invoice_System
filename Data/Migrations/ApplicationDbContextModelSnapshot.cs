@@ -86,6 +86,64 @@ namespace E_Invoice_system.Migrations
                     b.ToTable("products_services", (string)null);
                 });
 
+            modelBuilder.Entity("E_Invoice_system.Models.Sale", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("buyer_name")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("buyer_name");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("date");
+
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
+
+                    b.Property<decimal>("discount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("discount");
+
+                    b.Property<DateTime>("expiry_date")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("expiry_date");
+
+                    b.Property<string>("payment_method")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("payment_method");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price");
+
+                    b.Property<string>("prod_name_service")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("prod_name/service");
+
+                    b.Property<string>("qty_unit_type")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("qty/unit_type");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("total_price")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total_price");
+
+                    b.HasKey("id");
+
+                    b.ToTable("sale_details", (string)null);
+                });
+
             modelBuilder.Entity("E_Invoice_system.Models.Sellers", b =>
                 {
                     b.Property<int>("id")

@@ -15,7 +15,7 @@ namespace E_Invoice_system.Data
         public DbSet<ProductService> products_services { get; set; }
         public DbSet<users> users { get; set; }
         public DbSet<invoices> invoices { get; set; }
-        public DbSet<Payment> payments { get; set; }
+       
         public DbSet<Sale> sales { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

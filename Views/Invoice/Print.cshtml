@@ -54,40 +54,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
-            background: white;
+            background: #f3f4f6;
             font-family: 'Inter', sans-serif;
             color: #1f2937;
             margin: 0;
-            padding: 3rem;
+            padding: 2rem;
             box-sizing: border-box;
-            background-color: white; /* Ensure white background specifically for print */
+            min-height: 100vh;
+            overflow-y: auto;
         }
         
         .invoice-container {
-            max-width: 800px;
+            max-width: 210mm;
             margin: 0 auto;
             width: 100%;
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 2px solid #000;
         }
 
         /* Print Specifics */
         @@media print {
             @@page {
-                margin: 0; /* Removes browser headers/footers */
-                size: auto;
+                margin: 0;
+                size: A4;
             }
             body { 
-                padding: 2rem !important; /* Restore padding content */
-                margin: 0 !important; 
+                padding: 0 !important;
+                margin: 0 !important;
+                background: white !important;
                 -webkit-print-color-adjust: exact; 
                 print-color-adjust: exact; 
             }
              .invoice-container {
                 box-shadow: none !important;
-                padding: 0 !important; /* Content padding handled by body */
-                border: none !important;
-                margin: 0 auto !important;
-                width: 100% !important;
-                max-width: 100% !important;
+                padding: 2rem !important;
+                border: 2px solid #000 !important;
+                margin: 0 !important;
+                width: 210mm !important;
+                max-width: 210mm !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             .no-print { display: none !important; }
             button { display: none !important; }
@@ -120,7 +128,7 @@
 
     <div class="invoice-container">
         <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
             <div>
                 <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
                     <div style="background: #dc2626; color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: 900; font-size: 1.25rem;">S</div>
@@ -142,10 +150,10 @@
             </div>
         </div>
 
-        <div style="height: 2px; background: #e5e7eb; margin-bottom: 2rem;"></div>
+        <div style="height: 2px; background: #e5e7eb; margin-bottom: 1.5rem;"></div>
 
         <!-- Bill From / To -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem; font-size: 0.9rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; font-size: 0.9rem;">
             <div>
                 <p style="font-weight: 700; margin-bottom: 0.5rem; color: #111827;">Bill from:</p>
                 <p style="margin: 0 0 0.25rem 0;">SATA Technologies</p>
@@ -161,7 +169,7 @@
         </div>
 
         <!-- Table -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 3rem;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
             <thead>
                 <tr style="border-top: 2px solid #374151; border-bottom: 2px solid #374151;">
                     <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 700; text-transform: capitalize;">Item</th>

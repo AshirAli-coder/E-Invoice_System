@@ -55,19 +55,7 @@ namespace E_Invoice_system.Migrations
                     table.PrimaryKey("PK_invoices", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "payment",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Payment_method = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_payment", x => x.id);
-                });
+        
 
             migrationBuilder.CreateTable(
                 name: "products_services",
@@ -154,8 +142,7 @@ namespace E_Invoice_system.Migrations
             migrationBuilder.DropTable(
                name: "sale_details");
 
-            migrationBuilder.DropTable(
-                name: "payment");
+         
 
             migrationBuilder.DropTable(
                 name: "products_services");

@@ -39,12 +39,12 @@
                 
                 <a asp-controller="Product" asp-action="Index" class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" ? "active" : "")">
                     <i class="ph-package nav-icon"></i>
-                    <span>Products</span>
+                    <span>Products/Services</span>
                 </a>
                 
                 <a asp-controller="Sale" asp-action="Index" class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Sale" ? "active" : "")">
                     <i class="ph-shopping-cart nav-icon"></i>
-                    <span>Sale</span>
+                    <span>Sales</span>
                 </a>
                 
                 <a asp-controller="Invoice" asp-action="Index" class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Invoice" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
@@ -146,9 +146,15 @@
             }
         });
     </script>
+
+
+
+
     <div id="toast-container"></div>
     
     <script>
+
+
         // Check for success message from server
         const successMessage = '@TempData["Success"]';
         
@@ -162,7 +168,7 @@
             toast.className = 'toast';
             toast.innerHTML = `
                 <div class="toast-icon">
-                    <i class="ph-spinner animate-spin"></i>
+                    <i class="ph-check-circle" style="color:#10b981;"></i>
                 </div>
                 <div class="toast-content">
                     <div class="toast-title">${title}</div>

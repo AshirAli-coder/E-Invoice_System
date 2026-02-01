@@ -40,7 +40,10 @@ namespace E_Invoice_system.Controllers
         {
             if (ModelState.IsValid)
             {
-                invoice.date = DateTime.Now;
+                if (invoice.date == default)
+                {
+                    invoice.date = DateTime.Now;
+                }
 
                 if (string.IsNullOrEmpty(invoice.invoice_no))
                 {

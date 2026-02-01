@@ -16,7 +16,34 @@
         <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
 
+            <div class="form-grid" style="margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label" style="color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">Seller Information (Self)</label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Company Name</label>
+                    <input asp-for="seller_name" class="form-control" value="SATA Technologies" readonly style="background: #f1f5f9; font-weight: 600;" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Invoice Date</label>
+                    <input asp-for="date" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Seller Contact</label>
+                    <input asp-for="seller_contact" id="sellerContactTop" class="form-control" value="03102377884" placeholder="Contact number" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Seller Address</label>
+                    <input asp-for="seller_address" id="sellerAddressTop" class="form-control" value="New York, USA" placeholder="Office address" />
+                </div>
+            </div>
+
             <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" style="color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">Buyer Information</label>
+                </div>
+                <div class="form-group" style="grid-column: span 1;"></div> <!-- Spacer -->
+
                 <div class="form-group">
                     <label class="form-label">Select Buyer</label>
                     <select asp-for="buyer_name" class="form-control" required id="buyerSelect">
@@ -108,16 +135,11 @@
             <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;" />
 
             <div class="form-grid">
-                <div class="form-group" style="grid-column: span 2;">
-                    <label class="form-label">Seller Name</label>
-                    <select asp-for="seller_name" class="form-control" required id="sellerSelect">
-                        <option value="">-- Select Seller --</option>
-                        @foreach (var s in sellers)
-                        {
-                            <option value="SATA Technologies" data-contact="@s.contact" data-address="@s.address">SATA Technologies (@s.email)</option>
-                        }
-                    </select>
+                <div class="form-group">
+                    <label class="form-label" style="color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">Payment & Status</label>
                 </div>
+                <div class="form-group" style="grid-column: span 1;"></div> <!-- Spacer -->
+
                 <div class="form-group">
                     <label class="form-label">Payment Method</label>
                     <select asp-for="payment" class="form-control">
@@ -134,14 +156,6 @@
                         <option value="Paid">Paid</option>
                         <option value="Cancelled">Cancelled</option>
                     </select>
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label class="form-label">Seller Contact</label>
-                    <input asp-for="seller_contact" id="sellerContact" placeholder="Seller Contact" class="form-control" />
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label class="form-label">Seller Address</label>
-                    <textarea asp-for="seller_address" id="sellerAddress" placeholder="Seller Address" class="form-control" rows="2"></textarea>
                 </div>
             </div>
 
@@ -282,9 +296,4 @@
         document.getElementById('qtyUnitTypeHidden').value = `${invoiceItems.length} Items`;
     }
 
-    document.getElementById('sellerSelect').addEventListener('change', function() {
-        const option = this.options[this.selectedIndex];
-        document.getElementById('sellerContact').value = option.getAttribute('data-contact') || '';
-        document.getElementById('sellerAddress').value = option.getAttribute('data-address') || '';
-    });
 </script>
