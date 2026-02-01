@@ -1,5 +1,5 @@
 @using System.Text.Json
-
+@model E_Invoice_system.Models.invoices
 
 @{
     Layout = null;
@@ -50,212 +50,435 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Invoice #@(Model.invoice_no ?? Model.id.ToString()) - SATA Technologies</title>
+    <title>Invoice #@(Model.invoice_no ?? Model.id.ToString())</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #ff4757;
+            --navy: #1a1c1e;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             background: #f3f4f6;
             font-family: 'Inter', sans-serif;
-            color: #1f2937;
-            margin: 0;
+            color: var(--text-dark);
             padding: 2rem;
-            box-sizing: border-box;
             min-height: 100vh;
-            overflow-y: auto;
         }
-        
-        .invoice-container {
-            max-width: 210mm;
-            margin: 0 auto;
-            width: 100%;
+
+        .invoice-a4 {
+            width: 210mm;
+            min-height: 297mm;
             background: white;
-            padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border: 2px solid #000;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* Print Specifics */
+        /* Header Layout */
+        .header-bar {
+            background: var(--navy);
+            height: 120px;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .logo-section {
+            background: white;
+            width: 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 2rem;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+            -webkit-print-color-adjust: exact;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            background: #ff4757;
+            color: white;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.75rem;
+        }
+
+        .company-info h1 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: -0.01em;
+            color: var(--navy);
+        }
+
+        .company-info p {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: -2px;
+        }
+
+        .id-section {
+            background: var(--primary);
+            width: 35%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 2rem;
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+            color: white;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .id-text {
+            text-align: right;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        /* Content Area */
+        .main-content {
+            padding: 2.5rem;
+            flex-grow: 1;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .addr-label {
+            background: var(--navy);
+            color: white;
+            padding: 4px 15px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .addr-content { font-size: 0.9rem; line-height: 1.4; }
+        .addr-name { font-weight: 900; font-size: 1.1rem; margin-bottom: 2px; }
+
+        /* Table Styling */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2.5rem;
+        }
+
+        .items-table thead th {
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-align: left;
+            text-transform: uppercase;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .items-table tbody td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eef2f6;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+
+        /* Summary Area */
+        .summary-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 1rem;
+        }
+
+        .left-info {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .info-pill-box {
+            border: 1px solid #eef2f6;
+            border-radius: 12px;
+            padding: 1rem;
+            min-width: 160px;
+        }
+
+        .pill-head {
+            background: var(--navy);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .pill-content {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .status-paid { color: #10b981; }
+
+        .right-financials {
+            width: 320px;
+        }
+
+        .fin-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .total-box {
+            background: var(--primary);
+            color: white;
+            margin-top: 0.75rem;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+            -webkit-print-color-adjust: exact;
+        }
+
+        .total-label { font-size: 0.85rem; font-weight: 900; }
+        .total-value { font-size: 1.5rem; font-weight: 900; }
+
+        /* Footer Area */
+        .sign-area {
+            margin-top: 3rem;
+            text-align: right;
+            padding-right: 2.5rem;
+        }
+
+        .sign-line {
+            width: 250px;
+            border-top: 2px solid #e2e8f0;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .sign-text {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--navy);
+        }
+
+        .sign-company {
+            font-size: 0.6rem;
+            color: var(--text-light);
+            font-weight: 700;
+        }
+
+        .bottom-bar {
+            background: var(--navy);
+            height: 40px;
+            margin-top: auto;
+            -webkit-print-color-adjust: exact;
+        }
+
         @@media print {
-            @@page {
-                margin: 0;
-                size: A4;
-            }
-            body { 
-                padding: 0 !important;
-                margin: 0 !important;
-                background: white !important;
-                -webkit-print-color-adjust: exact; 
-                print-color-adjust: exact; 
-            }
-             .invoice-container {
-                box-shadow: none !important;
-                padding: 2rem !important;
-                border: 2px solid #000 !important;
-                margin: 0 !important;
-                width: 210mm !important;
-                max-width: 210mm !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            .no-print { display: none !important; }
-            button { display: none !important; }
+            body { background: white; padding: 0; }
+            .invoice-a4 { box-shadow: none; margin: 0; border: none; }
+            button { display: none; }
         }
 
-        .btn-print {
+        .no-print-btn {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #10b981;
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 12px 24px;
             border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
-
-        .btn-print:hover {
-            background: #059669;
-        }
-
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; }
     </style>
 </head>
 <body>
 
-    <div class="invoice-container">
-        <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-                    <div style="background: #dc2626; color: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: 900; font-size: 1.25rem;">S</div>
-                    <h1 style="font-size: 1.5rem; margin: 0; font-weight: 800; letter-spacing: -0.02em;">SATA Technologies</h1>
-                </div>
-                <div style="font-size: 0.9rem; color: #374151;">
-                    <p style="margin: 0 0 0.25rem 0;"><strong>Invoice Number:</strong> @(Model.invoice_no ?? Model.id.ToString())</p>
-                    <p style="margin: 0 0 0.25rem 0;"><strong>Date:</strong> @Model.date.ToString("dd/MM/yyyy")</p>
-                    <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <strong>Status:</strong>
-                        <span style="background: @(Model.status == "Paid" ? "#dcfce7" : "#fee2e2"); color: @(Model.status == "Paid" ? "#15803d" : "#b91c1c"); padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; border: 1px solid @(Model.status == "Paid" ? "#bbf7d0" : "#fecaca");">
-                            @Model.status
-                        </span>
+    <button class="no-print-btn" onclick="window.print()">PRINT INVOICE</button>
+
+    <div class="invoice-a4">
+        <!-- Premium Header -->
+        <div class="header-bar">
+            <div class="logo-section">
+                <div class="logo-box">
+                    <div class="logo-icon">S</div>
+                    <div class="company-info">
+                        <h1>SATA TECHNOLOGIES</h1>
+                        <p>Innovating the future</p>
                     </div>
                 </div>
             </div>
-            <div style="background: #dc2626; color: white; padding: 1rem 3rem; font-size: 2.5rem; font-weight: 900; letter-spacing: 0.1em; border-radius: 4px;">
-                INVOICE
+            <div class="id-section">
+                <div class="id-text">
+                    ID NO : INV-@(Model.invoice_no ?? Model.id.ToString())
+                </div>
             </div>
         </div>
 
-        <div style="height: 2px; background: #e5e7eb; margin-bottom: 1.5rem;"></div>
-
-        <!-- Bill From / To -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; font-size: 0.9rem;">
-            <div>
-                <p style="font-weight: 700; margin-bottom: 0.5rem; color: #111827;">Bill from:</p>
-                <p style="margin: 0 0 0.25rem 0;">SATA Technologies</p>
-                <p style="margin: 0 0 0.25rem 0;">@Model.seller_address</p>
-                <p style="margin: 0;">@Model.seller_contact</p>
+        <div class="main-content">
+            <!-- Addresses -->
+            <div class="address-grid">
+                <div class="bill-to">
+                    <div class="addr-label">Invoice To :</div>
+                    <div class="addr-content">
+                        <p class="addr-name">@Model.buyer_name</p>
+                        <p>@Model.buyer_address</p>
+                        <p>Phone: @Model.buyer_contact</p>
+                    </div>
+                </div>
+                <div class="bill-from">
+                    <div class="addr-label" style="margin-left: auto; display: block; width: fit-content;">Invoice From :</div>
+                    <div class="addr-content" style="text-align: right;">
+                        <p class="addr-name">SATA TECHNOLOGIES</p>
+                        <p>@Model.seller_address</p>
+                        <p>Phone: @Model.seller_contact</p>
+                        <p>@Model.date.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
             </div>
-            <div>
-                <p style="font-weight: 700; margin-bottom: 0.5rem; color: #111827;">Bill to:</p>
-                <p style="margin: 0 0 0.25rem 0;">@Model.buyer_name</p>
-                <p style="margin: 0 0 0.25rem 0;">@Model.buyer_address</p>
-                <p style="margin: 0;">@Model.buyer_contact</p>
-            </div>
-        </div>
 
-        <!-- Table -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
-            <thead>
-                <tr style="border-top: 2px solid #374151; border-bottom: 2px solid #374151;">
-                    <th style="padding: 0.75rem 0.5rem; text-align: left; font-weight: 700; text-transform: capitalize;">Item</th>
-                    <th style="padding: 0.75rem 0.5rem; text-align: center; font-weight: 700; text-transform: capitalize;">Qty/Unit</th>
-                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 700; text-transform: capitalize;">Price</th>
-                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 700; text-transform: capitalize;">Discount</th>
-                    <th style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 700; text-transform: capitalize;">Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (isMultiItem)
-                {
-                    foreach(var item in items)
+            <!-- Table -->
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width: 35%;">Product/Service</th>
+                        <th class="text-center">Qty/Unit_Type</th>
+                        <th class="text-right">Price</th>
+                        <th class="text-right">Discount</th>
+                        <th class="text-center">Expiry Date</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (isMultiItem)
+                    {
+                        foreach(var item in items)
+                        {
+                            <tr>
+                                <td>@item["name"]</td>
+                                <td class="text-center">@item["qty"] @(item.ContainsKey("unit") ? item["unit"] : "")</td>
+                                <td class="text-right">$@(((decimal)item["price"]).ToString("N2"))</td>
+                                <td class="text-right" style="color: var(--primary);">-$@(((decimal)item["discount"]).ToString("N2"))</td>
+                                <td class="text-center">N/A</td>
+                                <td class="text-right">$@(((decimal)item["total"]).ToString("N2"))</td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td style="padding: 1rem 0.5rem; border-bottom: 1px solid #e5e7eb;">
-                                <p style="font-weight: 700; margin: 0;">@item["name"]</p>
-                            </td>
-                            <td style="padding: 1rem 0.5rem; text-align: center; border-bottom: 1px solid #e5e7eb;">
-                                <p style="margin: 0; font-weight: 600;">@item["qty"] @(item.ContainsKey("unit") ? item["unit"] : "")</p>
-                            </td>
-                            <td style="padding: 1rem 0.5rem; text-align: right; border-bottom: 1px solid #e5e7eb;">
-                                <p style="margin: 0; font-weight: 600;">$@(((decimal)item["price"]).ToString("F2"))</p>
-                            </td>
-                            <td style="padding: 1rem 0.5rem; text-align: right; border-bottom: 1px solid #e5e7eb; color: #dc2626;">
-                                <p style="margin: 0; font-weight: 600;">-$@(((decimal)item["discount"]).ToString("F2"))</p>
-                            </td>
-                            <td style="padding: 1rem 0.5rem; text-align: right; border-bottom: 1px solid #e5e7eb; font-weight: 700;">
-                                $@(((decimal)item["total"]).ToString("F2"))
-                            </td>
+                            <td>@Model.prod_name_service</td>
+                            <td class="text-center">@Model.qty_unit_type</td>
+                            <td class="text-right">$@Model.price.ToString("N2")</td>
+                            <td class="text-right" style="color: var(--primary);">-$@Model.discount.ToString("N2")</td>
+                            <td class="text-center">N/A</td>
+                            <td class="text-right">$@((Model.price - Model.discount).ToString("N2"))</td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td style="padding: 1.5rem 0.5rem; border-bottom: 1px solid #e5e7eb;">
-                            <p style="font-weight: 700; margin: 0 0 0.25rem 0;">@Model.prod_name_service</p>
-                        </td>
-                        <td style="padding: 1.5rem 0.5rem; text-align: center; border-bottom: 1px solid #e5e7eb;">
-                            <p style="margin: 0; font-weight: 600;">@Model.qty_unit_type</p>
-                        </td>
-                        <td style="padding: 1.5rem 0.5rem; text-align: right; border-bottom: 1px solid #e5e7eb;">
-                            <p style="margin: 0; font-weight: 600;">$@Model.price.ToString("F2")</p>
-                        </td>
-                        <td style="padding: 1.5rem 0.5rem; text-align: right; border-bottom: 1px solid #e5e7eb; color: #dc2626;">
-                             <p style="margin: 0; font-weight: 600;">-$@Model.discount.ToString("F2")</p>
-                        </td>
-                        <td style="padding: 1.5rem 0.5rem; text-align: right; border-bottom: 1px solid #e5e7eb; vertical-align: middle; font-weight: 700;">
-                            $@((Model.price - Model.discount).ToString("F2"))
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <!-- Bottom Section -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div style="width: 50%;">
-                <p style="font-weight: 700; margin-bottom: 0.5rem;">Terms & Conditions:</p>
-                <p style="font-size: 0.8rem; color: #6b7280; line-height: 1.5;">Payment is due within 30 days. Please make checks payable to SATA Technologies. Thank you for your business!</p>
+            <!-- Financial Summary -->
+            <div class="summary-wrapper">
+                <div class="left-info">
+                    <div class="info-pill-box">
+                        <div class="pill-head">Payment Method :</div>
+                        <div class="pill-content">Method: @Model.payment</div>
+                    </div>
+                    <div class="info-pill-box" style="background: #f0fdf4; border-color: #dcfce7;">
+                        <div class="pill-head" style="background: #10b981;">Status :</div>
+                        <div class="pill-content status-paid" style="text-transform: uppercase;">@Model.status</div>
+                    </div>
+                </div>
+
+                <div class="right-financials">
+                    <div class="fin-row">
+                        <span style="color: var(--text-light);">Subtotal :</span>
+                        <span>$@subtotal.ToString("N2")</span>
+                    </div>
+                    <div class="fin-row" style="color: var(--primary);">
+                        <span>Discount :</span>
+                        <span>-$@discount.ToString("N2")</span>
+                    </div>
+                    <div class="total-box">
+                        <span class="total-label">TOTAL</span>
+                        <span class="total-value">$@totalAmount.ToString("N2")</span>
+                    </div>
+                </div>
             </div>
-            <div style="width: 35%;">
-                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
-                    <span style="color: #4b5563;">Subtotal:</span>
-                    <span style="font-weight: 600;">$@subtotal.ToString("F2")</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
-                    <span style="color: #4b5563;">Discount:</span>
-                    <span style="font-weight: 600; color: #dc2626;">-$@discount.ToString("F2")</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; margin-bottom: 1rem;">
-                    <span style="color: #4b5563;">Method:</span>
-                    <span style="font-weight: 600;">@Model.payment</span>
-                </div>
-                <div style="background: #dc2626; color: white; display: flex; justify-content: space-between; padding: 1rem; border-radius: 4px; font-weight: 800; font-size: 1.25rem;">
-                    <span>Total</span>
-                    <span>$@totalAmount.ToString("F2")</span>
-                </div>
+
+            <!-- Notes & Signature -->
+            <div style="margin-top: 2rem;">
+                <p style="font-weight: 800; font-size: 0.85rem; color: var(--navy);">Thanks for your business</p>
+                <p style="font-size: 0.65rem; color: var(--text-light); max-width: 300px; margin-top: 4px; line-height: 1.4;">
+                    We value your trust. Please ensure payment is made by the due date mentioned in the terms.
+                </p>
+            </div>
+
+            <div class="sign-area">
+                <div class="sign-line"></div><br/>
+                <span class="sign-text">Authorized Signature</span><br/>
+                <span class="sign-company">SATA TECHNOLOGIES</span>
             </div>
         </div>
+
+        <!-- Bottom Navy Bar -->
+        <div class="bottom-bar"></div>
     </div>
     
     <script>
-        // Auto-trigger print when page loads
-        window.onload = function() { window.print(); }
+        window.onload = function() { 
+            // Optional: Auto-print on load if needed
+            // window.print(); 
+        }
     </script>
 </body>
 </html>
