@@ -169,8 +169,8 @@
         
         // gradient for the line chart fill
         var gradient = trendCtx.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(255, 71, 87, 0.2)');
-        gradient.addColorStop(1, 'rgba(255, 71, 87, 0.0)');
+        gradient.addColorStop(0, 'rgba(255, 0, 0, 0.2)');
+        gradient.addColorStop(1, 'rgba(255, 0, 0, 0.0)');
 
         new Chart(trendCtx, {
             type: 'line',
@@ -180,10 +180,10 @@
                     label: 'Invoices Issued',
                     data: [12, 19, 3, 5, 2, 8],
                     backgroundColor: gradient,
-                    borderColor: '#ff4757',
+                    borderColor: '#ff0000',
                     borderWidth: 2,
                     pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#ff4757',
+                    pointBorderColor: '#ff0000',
                     pointBorderWidth: 2,
                     pointRadius: 4,
                     pointHoverRadius: 6,

@@ -72,9 +72,15 @@ namespace E_Invoice_system.Controllers
 
         public IActionResult Details(int id)
         {
-            // Removed Include(i => i.items)
             var invoice = _context.invoices.FirstOrDefault(i => i.id == id);
             if (invoice == null) return NotFound();
+
+            // Fetch expiry date for single-item invoices
+            if (!invoice.prod_name_service.Trim().StartsWith("["))
+            {
+                var product = _context.products_services.FirstOrDefault(p => p.prod_name_service == invoice.prod_name_service);
+                ViewBag.SingleItemExpiry = product?.expiry_date?.ToString("yyyy-MM-dd") ?? "N/A";
+            }
 
             ViewData["Title"] = "Invoice #" + (invoice.invoice_no ?? invoice.id.ToString());
             return View(invoice);
@@ -84,6 +90,13 @@ namespace E_Invoice_system.Controllers
         {
             var invoice = _context.invoices.FirstOrDefault(i => i.id == id);
             if (invoice == null) return NotFound();
+
+            // Fetch expiry date for single-item invoices
+            if (!invoice.prod_name_service.Trim().StartsWith("["))
+            {
+                var product = _context.products_services.FirstOrDefault(p => p.prod_name_service == invoice.prod_name_service);
+                ViewBag.SingleItemExpiry = product?.expiry_date?.ToString("yyyy-MM-dd") ?? "N/A";
+            }
 
             return View(invoice);
         }
