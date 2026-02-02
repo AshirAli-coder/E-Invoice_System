@@ -323,5 +323,5 @@ D:\netcore\E-Invoice_system\obj\Debug\net10.0\E-Invoic.08753401.Up2Date
 D:\netcore\E-Invoice_system\bin\Debug\net10.0\NuGet.Config
 D:\netcore\E-Invoice_system\obj\Debug\net10.0\E-Invoice_system.sourcelink.json
 D:\netcore\E-Invoice_system\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
-D:\netcore\E-Invoice_system\obj\Debug\net10.0\compressed\2lv90o6rja-{0}-63010t7a68-63010t7a68.gz
-D:\netcore\E-Invoice_system\obj\Debug\net10.0\compressed\iuu60c21so-{0}-r18u1hphpi-r18u1hphpi.gz
+D:\netcore\E-Invoice_system\obj\Debug\net10.0\compressed\iuu60c21so-{0}-timfbiolvn-timfbiolvn.gz
+D:\netcore\E-Invoice_system\obj\Debug\net10.0\compressed\2lv90o6rja-{0}-lccs2grln5-lccs2grln5.gz

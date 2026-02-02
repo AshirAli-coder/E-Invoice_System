@@ -220,7 +220,7 @@
         left: 0;
         width: 180px;
         height: 180px;
-        background: #BC1823;
+        background: #E53935;
         clip-path: polygon(0 0, 100% 0, 0 100%);
         z-index: 2;
     }
@@ -409,7 +409,7 @@
         left: 150px;
         width: 400px;
         height: 120px;
-        background: #BC1823;
+        background: #E53935;
         clip-path: polygon(20% 0, 100% 100%, 0 100%);
         z-index: 2;
     }
@@ -447,7 +447,7 @@
     }
 
     @@media print {
-        #invoiceViewWrapper { padding: 0; margin: 0; background: white; height: 100%; border: none; }
+        #invoiceViewWrapper { padding: 0; margin: 0; background: white !important; height: 100vh; border: none; }
         .no-print, .sidebar, .top-bar, .toast-container { display: none !important; }
         
         * {
@@ -462,6 +462,7 @@
             padding: 0 !important;
             height: 297mm;
             width: 210mm;
+            background: white !important;
         }
 
         #printableInvoice, #printableInvoice * { 
@@ -482,13 +483,14 @@
             border-radius: 0 !important;
             display: flex !important;
             flex-direction: column !important;
+            overflow: hidden !important;
+            /* Scale to fit one page */
+            transform: scale(0.98);
+            transform-origin: top center;
         }
 
-        /* Ensure background colors are shown */
-        .shape-red-top, .shape-black-top-1, .shape-black-top-2,
-        .shape-red-bottom, .shape-black-bottom-1, .shape-black-bottom-2,
-        .section-label, .summary-total, .status-badge, thead tr {
-            background-color: inherit !important;
+        .top-pattern, .bottom-pattern {
+            display: block !important;
         }
     }
 </style>
