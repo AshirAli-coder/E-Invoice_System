@@ -419,12 +419,12 @@
             }
 
             html, body {
-                width: 210mm;
-                height: 297mm;
+                width: 100% !important;
+                height: 100% !important;
                 background: white !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                overflow: hidden;
+                overflow: hidden !important;
             }
 
             .invoice-container {
@@ -437,7 +437,8 @@
                 top: 0;
                 left: 0;
                 overflow: hidden !important;
-                transform: scale(0.97);
+                page-break-after: avoid !important;
+                transform: scale(0.95);
                 transform-origin: top center;
             }
 

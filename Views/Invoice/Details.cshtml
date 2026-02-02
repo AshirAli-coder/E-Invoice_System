@@ -460,14 +460,14 @@
             color-adjust: exact !important;
         }
 
-        body { 
+        html, body { 
             visibility: hidden; 
             margin: 0 !important; 
             padding: 0 !important;
-            height: 297mm;
-            width: 210mm;
+            height: 100% !important;
+            width: 100% !important;
             background: white !important;
-            overflow: hidden;
+            overflow: hidden !important;
         }
 
         #printableInvoice, #printableInvoice * { 
@@ -489,8 +489,9 @@
             display: flex !important;
             flex-direction: column !important;
             overflow: hidden !important;
-            /* Scale slightly if needed to ensure one page and no scrollbars */
-            transform: scale(0.97);
+            page-break-after: avoid !important;
+            /* Aggressive scale to ensure 1-page on all drivers */
+            transform: scale(0.95);
             transform-origin: top center;
         }
 
