@@ -498,7 +498,7 @@
             left: 0 !important; 
             top: 0 !important; 
             width: 210mm !important; 
-            height: 296mm !important; /* Tiny reduction to avoid bleed */
+            height: 297mm !important; /* Exact A4 height */
             margin: 0 !important; 
             padding: 0 !important;
             box-shadow: none !important;
@@ -508,24 +508,24 @@
             display: block !important;
             overflow: hidden !important;
             page-break-after: avoid !important;
-            transform: scale(0.99) !important; 
-            transform-origin: top left !important; /* Ensure no centering gaps */
+            transform: none !important; /* Remove scaling to fill paper edges */
+            transform-origin: top left !important;
             z-index: 9999 !important;
         }
 
         .bottom-pattern {
             position: absolute !important;
-            bottom: -1px !important; 
-            right: -1px !important; /* Close right gap */
-            left: -1px !important;  /* Close left gap */
+            bottom: -2px !important; 
+            right: -2px !important; 
+            left: -2px !important;  
             display: block !important;
-            width: calc(100% + 2px) !important;
+            width: calc(100% + 4px) !important;
         }
 
         .shape-black-bottom-2 {
-            right: -1px !important;
-            bottom: -1px !important;
-            width: 251px !important;
+            right: -2px !important;
+            bottom: -2px !important;
+            width: 252px !important;
         }
 
         .footer-branding {
