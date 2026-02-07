@@ -46,6 +46,7 @@
 .search-wrapper {
     position: relative;
     margin-bottom: 5px;
+    max-width: 350px;
 }
 
 .search-wrapper i {

@@ -7,29 +7,32 @@
 <div class="pos-container">
     <!-- Left: Product Catalog -->
     <div class="catalog-section">
-        <div class="catalog-header">
-            <h2 class="catalog-title">
-                <i class="ph-package"></i> Product Catalog
-            </h2>
-                <i class="ph-magnifying-glass"></i>
-                <input type="text" id="prodSearch" placeholder="Search products..." oninput="filterProducts()" />
-            </div>
-            
-            <!-- Search Mode Toggle -->
-            <div style="margin-top: 1rem; margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <span style="font-size: 0.85rem; font-weight: 700; color: #475569; letter-spacing: 0.02em;">SEARCH BY</span>
-                    <div class="toggle-group">
-                        <div class="toggle-option">
-                            <input type="radio" id="searchName" name="searchMode" value="name" checked onchange="filterProducts()">
-                            <label for="searchName">Name</label>
-                        </div>
-                        <div class="toggle-option">
-                            <input type="radio" id="searchBarcode" name="searchMode" value="barcode" onchange="filterProducts()">
-                            <label for="searchBarcode">Barcode</label>
+            <div class="catalog-header">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 class="catalog-title" style="margin-bottom: 0;">
+                        <i class="ph-package"></i> Product Catalog
+                    </h2>
+                    
+                    <!-- Search Mode Toggle (Moved Here) -->
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase;">Search By</span>
+                        <div class="toggle-group">
+                            <div class="toggle-option">
+                                <input type="radio" id="searchName" name="searchMode" value="name" checked onchange="updateSearchPlaceholder(); filterProducts();">
+                                <label for="searchName">Name</label>
+                            </div>
+                            <div class="toggle-option">
+                                <input type="radio" id="searchBarcode" name="searchMode" value="barcode" onchange="updateSearchPlaceholder(); filterProducts();">
+                                <label for="searchBarcode">Barcode</label>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="search-wrapper">
+                    <i class="ph-magnifying-glass"></i>
+                    <input type="text" id="prodSearch" placeholder="Search by name..." oninput="filterProducts()" />
+               </div>
             </div>
 
         <div class="product-grid" id="productGrid">
@@ -242,6 +245,16 @@
     let saleItems = [];
     let currentTotal = 0;
     let tenderedAmount = "";
+
+    function updateSearchPlaceholder() {
+        const mode = document.querySelector('input[name="searchMode"]:checked').value;
+        const input = document.getElementById('prodSearch');
+        if (mode === 'name') {
+            input.placeholder = "Search by name...";
+        } else {
+            input.placeholder = "Search by barcode...";
+        }
+    }
 
     function filterProducts() {
         const term = document.getElementById('prodSearch').value.toLowerCase();
