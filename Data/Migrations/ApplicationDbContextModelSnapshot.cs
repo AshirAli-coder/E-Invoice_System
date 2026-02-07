@@ -35,6 +35,10 @@ namespace E_Invoice_system.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("date");
 
+                    b.Property<string>("barcode")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("barcode");
+
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");

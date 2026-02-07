@@ -14,6 +14,7 @@
                 <tr>
                     <th style="padding-left: 1.5rem; width: 60px;">ID</th>
                     <th>Item/Service Name</th>
+                    <th>Barcode</th>
                     <th style="width: 140px;">Qty/Unit</th>
                     <th style="width: 120px;">Price</th>
                     <th style="width: 100px;">Discount</th>
@@ -27,6 +28,7 @@
                     <tr>
                         <td class="font-bold" style="padding-left: 1.5rem;">#@item.id</td>
                         <td class="font-medium">@item.prod_name_service</td>
+                        <td>@(item.barcode ?? "-")</td>
                         <td>@item.qty_unit_type</td>
                         <td class="font-bold">$@item.price.ToString("F2")</td>
                         <td class="text-danger font-medium">$@item.discount.ToString("F2")</td>
@@ -52,7 +54,7 @@
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="7" class="empty-state">
+                        <td colspan="8" class="empty-state">
                             <i class="ph-package empty-state-icon"></i>
                             <p>No products found. Click "Add New Item" to get started.</p>
                         </td>

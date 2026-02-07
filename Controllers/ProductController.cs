@@ -32,6 +32,13 @@ namespace E_Invoice_system.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(ProductService product)
         {
+            // Auto-generate barcode if empty
+            if (string.IsNullOrWhiteSpace(product.barcode))
+            {
+                var uniqueBarcode = GenerateUniqueBarcode();
+                product.barcode = uniqueBarcode;
+            }
+
             // Server-side validation for quantity 0
             if (!string.IsNullOrEmpty(product.qty_unit_type))
             {
@@ -65,6 +72,35 @@ namespace E_Invoice_system.Controllers
             return View(product);
         }
 
+        private string GenerateUniqueBarcode()
+        {
+            var lastProductWithBarcode = _context.products_services
+                .Where(p => p.barcode != null && p.barcode.StartsWith("P"))
+                .AsEnumerable() // Client-side evaluation for complex parsing if needed
+                .LastOrDefault(); // Assuming simple increment, but simpler approach:
+                
+            // Better approach for scaling: query max
+            // Since we can't easily do string-number sorting in SQL with "P", we might need to fetch all or use raw SQL.
+            // For now, I'll fetch recent ones or just all barcodes starting with P to find max.
+            // Given "P0000000001", it's length 11.
+            
+            var barcodes = _context.products_services
+                .Where(p => p.barcode != null && p.barcode.StartsWith("P"))
+                .Select(p => p.barcode)
+                .ToList();
+
+            long maxId = 0;
+            foreach (var code in barcodes)
+            {
+                if (code.Length > 1 && long.TryParse(code.Substring(1), out long currentId))
+                {
+                    if (currentId > maxId) maxId = currentId;
+                }
+            }
+            
+            return $"P{(maxId + 1):D10}";
+        }
+
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -78,6 +114,13 @@ namespace E_Invoice_system.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(ProductService product)
         {
+            // Auto-generate barcode if empty on edit
+            if (string.IsNullOrWhiteSpace(product.barcode))
+            {
+                 var uniqueBarcode = GenerateUniqueBarcode();
+                 product.barcode = uniqueBarcode;
+            }
+
             // Server-side validation for quantity 0
             if (!string.IsNullOrEmpty(product.qty_unit_type))
             {

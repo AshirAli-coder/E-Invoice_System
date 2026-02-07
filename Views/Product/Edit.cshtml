@@ -29,6 +29,12 @@
                     <input asp-for="prod_name_service" class="form-control" placeholder="e.g. Laptop Repair, Web Design" required />
                     <span asp-validation-for="prod_name_service" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="barcode" class="form-label">Barcode</label>
+                    <input asp-for="barcode" class="form-control" placeholder="Leave empty to auto-generate" />
+                </div>
+
                 <div class="form-group">
                     <label asp-for="qty_unit_type" class="form-label">Quantity / Unit Type</label>
                     <input asp-for="qty_unit_type" class="form-control" placeholder="e.g. 1 Unit, 5 Hours" />
