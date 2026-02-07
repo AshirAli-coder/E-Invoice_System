@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using E_Invoice_system.Data;
 
 var builder = WebApplication.CreateBuilder(args);
