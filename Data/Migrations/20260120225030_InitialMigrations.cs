@@ -104,6 +104,7 @@ namespace E_Invoice_system.Migrations
                    customer_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                    date = table.Column<DateTime>(type: "datetime2", nullable: false),
                    prod_name_service = table.Column<string>(name: "prod_name/service", type: "nvarchar(max)", nullable: true),
+                   barcode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                    qty_unit_type = table.Column<string>(name: "qty/unit_type", type: "nvarchar(max)", nullable: true),
                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                    discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),

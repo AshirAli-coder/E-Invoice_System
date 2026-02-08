@@ -18,6 +18,9 @@ namespace E_Invoice_system.Models
         [Column("prod_name/service")]
         public string? prod_name_service { get; set; }
 
+        [Column("barcode")]
+        public string? barcode { get; set; }
+
         [Column("qty/unit_type")]
         public string? qty_unit_type { get; set; }
 

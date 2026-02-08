@@ -117,6 +117,10 @@ namespace E_Invoice_system.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("prod_name/service");
 
+                    b.Property<string>("barcode")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("barcode");
+
                     b.Property<string>("qty_unit_type")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("qty/unit_type");

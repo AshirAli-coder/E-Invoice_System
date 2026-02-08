@@ -40,7 +40,7 @@
             {
                 foreach (var p in products)
                 {
-                    <div class="product-card" data-name="@p.prod_name_service.ToLower()" data-barcode="@(p.barcode?.ToLower() ?? "")" onclick="addToSaleFromCard(@p.id, '@p.prod_name_service', @p.price, @p.discount, '@(p.expiry_date?.ToString("yyyy-MM-dd"))')">
+                    <div class="product-card" data-name="@p.prod_name_service.ToLower()" data-barcode="@(p.barcode?.ToLower() ?? "")" onclick="addToSaleFromCard(@p.id, '@p.prod_name_service', @p.price, @p.discount, '@(p.expiry_date?.ToString("yyyy-MM-dd"))', '@(p.barcode ?? "")')">
                         <div class="product-icon-box">
                             <i class="ph-cube"></i>
                         </div>
@@ -50,6 +50,12 @@
                             @if (p.discount > 0)
                             {
                                 <span class="prod-card-discount">Save $@p.discount.ToString("N2")</span>
+                            }
+                            @if (!string.IsNullOrEmpty(p.qty_unit_type))
+                            {
+                                <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px; font-weight: 600;">
+                                    <i class="ph-package" style="font-size: 0.7rem;"></i> Stock: @p.qty_unit_type
+                                </div>
                             }
                         </div>
                     </div>
@@ -111,7 +117,7 @@
                     <thead>
                         <tr>
                             <th>Item</th>
-                            <th style="width: 60px;">Qty</th>
+                            <th style="width: 80px;">QTY/Unit type</th>
                             <th style="width: 80px;">Total</th>
                             <th style="width: 40px;"></th>
                         </tr>
@@ -212,7 +218,7 @@
                 </div>
 
                 <div class="tender-input-wrapper">
-                    <input type="text" placeholder="CASH TEND" class="tender-input" id="cashTendered" readonly />
+                    <input type="text" placeholder="CASH TEND" class="tender-input" id="cashTendered" oninput="handleKeyboardInput(this.value)" />
                 </div>
 
                 <div class="numpad-grid">
@@ -276,7 +282,7 @@
         });
     }
 
-    function addToSaleFromCard(id, name, price, discount, expiry) {
+    function addToSaleFromCard(id, name, price, discount, expiry, barcode) {
         // Check transaction mode
         const mode = document.querySelector('input[name="transMode"]:checked').value;
         const isReturn = mode === 'return';
@@ -303,6 +309,7 @@
         } else {
             saleItems.push({
                 prod_name_service: name,
+                barcode: barcode || null,
                 qty: qtyToAdd,
                 price: price,
                 discount: discount,
@@ -411,7 +418,8 @@
             const prefix = `items[${index}]`;
             hiddenContainer.innerHTML += `
                 <input type="hidden" name="${prefix}.prod_name_service" value="${item.prod_name_service}" />
-                <input type="hidden" name="${prefix}.qty_unit_type" value="${item.qty} Unit" />
+                <input type="hidden" name="${prefix}.barcode" value="${item.barcode || ''}" />
+                <input type="hidden" name="${prefix}.qty_unit_type" value="${item.qty}" />
                 <input type="hidden" name="${prefix}.price" value="${item.price}" />
                 <input type="hidden" name="${prefix}.discount" value="${item.discount}" />
                 <input type="hidden" name="${prefix}.expiry_date" value="${item.expiry_date || ''}" />
@@ -491,6 +499,17 @@
         updateTenderDisplay();
     }
 
+    function handleKeyboardInput(value) {
+        // Remove $ and commas, keep only numbers and decimal point
+        const cleaned = value.replace(/[$,]/g, '');
+        
+        // Validate it's a valid number format
+        if (cleaned === '' || /^\d*\.?\d*$/.test(cleaned)) {
+            tenderedAmount = cleaned;
+            updateTenderDisplay();
+        }
+    }
+
     function updateTenderDisplay() {
         const displayVal = tenderedAmount === "" ? "" : "$" + parseFloat(tenderedAmount).toLocaleString(undefined, { minimumFractionDigits: 2 });
         document.getElementById('cashTendered').value = displayVal;
@@ -499,8 +518,16 @@
         document.getElementById('modalTendered').innerText = "$" + tenderVal.toLocaleString(undefined, { minimumFractionDigits: 2 });
         
         const change = tenderVal - currentTotal;
-        const changeDisplay = change > 0 ? "$" + change.toLocaleString(undefined, { minimumFractionDigits: 2 }) : "$0.00";
-        document.getElementById('modalChange').innerText = changeDisplay;
+        
+        // For returns (negative total), change calculation is different
+        // If total is -500 and tender is 0, change should be 500 (money back to customer)
+        const formatCurrency = (value) => {
+            const absValue = Math.abs(value);
+            const formatted = absValue.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            return value < 0 ? `-$${formatted}` : `$${formatted}`;
+        };
+        
+        document.getElementById('modalChange').innerText = formatCurrency(change);
     }
 
     function submitSale() {
@@ -517,7 +544,9 @@
         const method = document.getElementById('hiddenPaymentMethod').value;
         const tenderVal = parseFloat(tenderedAmount) || 0;
         
-        if (method === 'Cash' && tenderVal < currentTotal) {
+        // For returns (negative total), we don't need tender validation
+        // For sales, validate tender is sufficient
+        if (method === 'Cash' && currentTotal > 0 && tenderVal < currentTotal) {
             if(!confirm("Tendered amount is less than total. Record as partial payment/credit?")) {
                 return;
             }
