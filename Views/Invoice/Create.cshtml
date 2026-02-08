@@ -124,7 +124,7 @@
                         <thead>
                             <tr style="background: #f8fafc; text-align: left;">
                                 <th style="padding: 1rem; font-size: 0.875rem; font-weight: 700; color: var(--text-muted); width: 35%;">Product/Service</th>
-                                <th style="padding: 1rem; font-size: 0.875rem; font-weight: 700; color: var(--text-muted); width: 15%;">Qty/Unit</th>
+                                <th style="padding: 1rem; font-size: 0.875rem; font-weight: 700; color: var(--text-muted); width: 15%;">QTY / UNIT</th>
                                 <th style="padding: 1rem; font-size: 0.875rem; font-weight: 700; color: var(--text-muted); width: 16%;">Expiry</th>
                                 <th style="padding: 1rem; font-size: 0.875rem; font-weight: 700; color: var(--text-muted); width: 11%;">Price</th>
                                 <th style="padding: 1rem; font-size: 0.875rem; font-weight: 700; color: var(--text-muted); width: 11%;">Discount</th>
@@ -220,7 +220,7 @@
                             </td>
                             <td style="padding: 0.4rem; width: 100px; white-space: nowrap;">${sale.date}</td>
                             <td style="padding: 0.4rem; font-weight: 600;">${sale.prod_name_service}</td>
-                            <td style="padding: 0.4rem; width: 80px;">${sale.qty_unit_type}</td>
+                            <td style="padding: 0.4rem; width: 80px;">${sale.qty_unit_type.replace(/[^0-9.-]/g, '')}</td>
                             <td style="padding: 0.4rem; width: 80px;">$${sale.price.toFixed(2)}</td>
                             <td style="padding: 0.75rem;">${sale.discount > 0 ? '$' + sale.discount.toFixed(2) : '$0.00'}</td>
                             <td style="padding: 0.4rem; width: 100px; white-space: nowrap; color: var(--text-muted);">${sale.expiryDate}</td>
@@ -283,7 +283,7 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="padding: 0.5rem;">${item.name}</td>
-                <td style="padding: 0.5rem;">${item.qty} ${item.unit || ''}</td>
+                <td style="padding: 0.5rem;">${item.qty}</td>
                 <td style="padding: 0.5rem;">
                     <input type="date" value="${item.expiryDate ? item.expiryDate.split('T')[0] : ''}" 
                            readonly

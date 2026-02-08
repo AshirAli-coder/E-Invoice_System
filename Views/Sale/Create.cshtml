@@ -54,7 +54,7 @@
                             @if (!string.IsNullOrEmpty(p.qty_unit_type))
                             {
                                 <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px; font-weight: 600;">
-                                    <i class="ph-package" style="font-size: 0.7rem;"></i> Stock: @p.qty_unit_type
+                                    <i class="ph-package" style="font-size: 0.7rem;"></i> @System.Text.RegularExpressions.Regex.Replace(p.qty_unit_type, @"[^0-9.-]", "")
                                 </div>
                             }
                         </div>
@@ -117,7 +117,7 @@
                     <thead>
                         <tr>
                             <th>Item</th>
-                            <th style="width: 80px;">QTY/Unit type</th>
+                            <th style="width: 80px;">QTY / UNIT</th>
                             <th style="width: 80px;">Total</th>
                             <th style="width: 40px;"></th>
                         </tr>

@@ -18,7 +18,7 @@
                     <th style="padding-left: 1.5rem;">Date</th>
                     <th>Product / Service</th>
                     <th>Customer Name</th>
-                    <th>Qty / Unit</th>
+                    <th>QTY / UNIT</th>
                     <th>Price</th>
                     <th>Expiry Date</th>
                     <th>Total Amount</th>
@@ -43,7 +43,7 @@
                             <td class="text-muted">@sale.customer_name</td>
                             <td>
                                 <span style="background: var(--bg-light); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--border);">
-                                    @sale.qty_unit_type
+                                    @System.Text.RegularExpressions.Regex.Replace(sale.qty_unit_type ?? "", @"[^0-9.-]", "")
                                 </span>
                             </td>
                             <td class="text-muted">$@sale.price.ToString("N2")</td>
