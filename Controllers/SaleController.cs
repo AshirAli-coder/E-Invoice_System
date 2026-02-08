@@ -95,9 +95,7 @@ namespace E_Invoice_system.Controllers
                                 // Reload lists
                                 ViewBag.Customers = _context.customers.Where(c => c.status == "Active").ToList();
                                 ViewBag.Products = _context.products_services.Where(p => p.status == "Available").ToList();
-                                return View(items); // Passing items back might break view if it expects null or different model. The view expects nothing (it builds from ViewBag/JS).
-                                // Actually, Create View (GET) returns View(). POST returns Redirect.
-                                // If error, we return View().
+                                return View(); // View expects Model of type Sale, not List<Sale>
                             }
 
                             currentQty -= qty; // If qty is negative (return), this adds to stock.
@@ -113,6 +111,7 @@ namespace E_Invoice_system.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.Customers = _context.customers.Where(c => c.status == "Active").ToList();
             ViewBag.Products = _context.products_services
                 .Where(p => p.status == "Available")
                 .ToList();
@@ -122,13 +121,26 @@ namespace E_Invoice_system.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            var sale = _context.sales.Find(id);
-            if (sale != null)
+            try
             {
-                _context.sales.Remove(sale);
-                _context.SaveChanges();
+                var sale = _context.sales.FirstOrDefault(s => s.id == id);
+                if (sale != null)
+                {
+                    _context.sales.Remove(sale);
+                    _context.SaveChanges();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // If it's already gone, we don't need to do anything
+                if (!_context.sales.Any(s => s.id == id))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                throw;
             }
             return RedirectToAction(nameof(Index));
         }

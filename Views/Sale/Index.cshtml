@@ -42,9 +42,7 @@
                             </td>
                             <td class="text-muted">@sale.customer_name</td>
                             <td>
-                                <span style="background: var(--bg-light); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--border);">
-                                    @System.Text.RegularExpressions.Regex.Replace(sale.qty_unit_type ?? "", @"[^0-9.-]", "")
-                                </span>
+                                @System.Text.RegularExpressions.Regex.Replace(sale.qty_unit_type ?? "", @"[^0-9.-]", "")
                             </td>
                             <td class="text-muted">$@sale.price.ToString("N2")</td>
                             <td class="text-muted">@(sale.expiry_date?.ToString("MMM dd, yyyy") ?? "N/A")</td>

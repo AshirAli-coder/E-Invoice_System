@@ -12,6 +12,13 @@
                     <h2 class="catalog-title" style="margin-bottom: 0;">
                         <i class="ph-package"></i> Product Catalog
                     </h2>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger" style="margin: 10px 0; padding: 10px; border-radius: 8px; background: #fee2e2; border: 1px solid #fecaca; color: #dc2626; font-size: 0.85rem; font-weight: 600;">
+                            @Html.ValidationSummary(false, "")
+                        </div>
+                    }
                     
                     <!-- Search Mode Toggle (Moved Here) -->
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
