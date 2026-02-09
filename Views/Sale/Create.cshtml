@@ -34,12 +34,12 @@
                 <input type="text" id="prodSearch" placeholder="Search products or scan barcode..." oninput="filterProducts()" />
             </div>
             
-            <div class="mode-toggle-v2">
+            <div class="search-toggle-v2">
                 <div class="toggle-pill">
-                    <input type="radio" id="modeSale" name="transMode" value="sale" checked onchange="handleModeChange()">
-                    <label for="modeSale">Sale</label>
-                    <input type="radio" id="modeReturn" name="transMode" value="return" onchange="handleModeChange()">
-                    <label for="modeReturn">Return</label>
+                    <input type="radio" id="searchName" name="searchMode" value="name" checked onchange="handleSearchModeChange()">
+                    <label for="searchName">Name</label>
+                    <input type="radio" id="searchBarcode" name="searchMode" value="barcode" onchange="handleSearchModeChange()">
+                    <label for="searchBarcode">Barcode</label>
                 </div>
             </div>
         </div>
@@ -89,6 +89,14 @@
                 <div>
                     <h3>Current Order</h3>
                     <p id="itemCountDisplay">0 items selected</p>
+                </div>
+                <div class="mode-toggle-v2 compact">
+                    <div class="toggle-pill">
+                        <input type="radio" id="modeSale" name="transMode" value="sale" checked onchange="handleModeChange()">
+                        <label for="modeSale">Sale</label>
+                        <input type="radio" id="modeReturn" name="transMode" value="return" onchange="handleModeChange()">
+                        <label for="modeReturn">Return</label>
+                    </div>
                 </div>
                 <button type="button" class="btn-clear-v2" onclick="clearSaleItems()">
                     <i class="ph-trash"></i>
@@ -146,7 +154,7 @@
                 <div id="hiddenInputsContainer"></div>
 
                 <button type="button" class="btn-pay-v2" onclick="openPaymentModal()">
-                    Complete Payment
+                    Payment
                     <i class="ph-arrow-right"></i>
                 </button>
             </div>
@@ -159,21 +167,22 @@
     <div class="payment-card">
         <!-- Left Side: Payment Input -->
         <div class="payment-left">
-            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 32px; color: var(--text-header);">Select Payment Method</h2>
+            <h1 class="payment-title">Checkout</h1>
+            <p class="payment-subtitle">Complete your transaction by selecting a payment method.</p>
             
             <div class="method-tabs">
-                <button type="button" class="method-tab active" id="btnCash" onclick="setWebPaymentMethod('Cash')">
-                    <i class="ph-money"></i> Cash
-                </button>
-                <button type="button" class="method-tab" id="btnCard" onclick="setWebPaymentMethod('Card')">
-                    <i class="ph-credit-card"></i> Card
-                </button>
-                <button type="button" class="method-tab" id="btnTransfer" onclick="setWebPaymentMethod('Transfer')">
-                    <i class="ph-bank"></i> Transfer
-                </button>
-                <button type="button" class="method-tab" id="btnCredit" onclick="setWebPaymentMethod('Credit')">
-                    <i class="ph-user-circle-plus"></i> Store Credit
-                </button>
+                <div class="method-tab active" id="btnCash" onclick="setWebPaymentMethod('Cash')">
+                    <i class="ph-money"></i> <span>Cash</span>
+                </div>
+                <div class="method-tab" id="btnCard" onclick="setWebPaymentMethod('Card')">
+                    <i class="ph-credit-card"></i> <span>Card</span>
+                </div>
+                <div class="method-tab" id="btnTransfer" onclick="setWebPaymentMethod('Transfer')">
+                    <i class="ph-bank"></i> <span>Bank</span>
+                </div>
+                <div class="method-tab" id="btnCredit" onclick="setWebPaymentMethod('Credit')">
+                    <i class="ph-user-focus"></i> <span>Credit</span>
+                </div>
             </div>
 
             <div class="web-input-group">
@@ -219,8 +228,8 @@
                 </p>
                 
                 <div style="display: flex; gap: 16px;">
-                    <button type="button" class="btn-confirm-web" style="background: #f1f5f9; color: var(--text-main); flex: 1;" onclick="closePaymentModal()">Cancel</button>
-                    <button type="button" class="btn-confirm-web" style="flex: 2; background: var(--primary);" onclick="submitSaleForm()">
+                    <button type="button" class="btn-confirm-web" style="background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); flex: 1;" onclick="closePaymentModal()">Cancel</button>
+                    <button type="button" class="btn-confirm-web" style="flex: 2; background: var(--primary); color: white;" onclick="submitSaleForm()">
                         Complete Order <i class="ph-check-circle"></i>
                     </button>
                 </div>
@@ -232,31 +241,43 @@
 <script>
     let saleItems = [];
     let currentTotal = 0;
+    let searchMode = 'name'; // Default search mode
+
+    function handleSearchModeChange() {
+        searchMode = document.querySelector('input[name="searchMode"]:checked').value;
+        const input = document.getElementById('prodSearch');
+        input.placeholder = searchMode === 'name' ? "Search by product name..." : "Scan or enter barcode...";
+        input.value = '';
+        filterProducts();
+        input.focus();
+    }
 
     function filterByCategory(cat) {
         document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
         event.currentTarget.classList.add('active');
         
-        // Add filtering logic here if needed based on product types
-        // For now, it stays as a placeholder or can be simple name matching
         const cards = document.querySelectorAll('.product-card-v2');
         cards.forEach(card => {
             if (cat === 'all') card.style.display = '';
             else if (cat === 'fav') {
-                // Example: filter cards with a specific data attribute
                 card.style.display = card.dataset.stock > 10 ? '' : 'none';
             }
         });
     }
 
     function filterProducts() {
-        const term = document.getElementById('prodSearch').value.toLowerCase();
+        const query = document.getElementById('prodSearch').value.toLowerCase();
         const cards = document.querySelectorAll('.product-card-v2');
-        
+
         cards.forEach(card => {
             const name = card.dataset.name;
             const barcode = card.dataset.barcode;
-            card.style.display = (name.includes(term) || barcode.includes(term)) ? '' : 'none';
+            
+            if (searchMode === 'name') {
+                card.style.display = name.includes(query) ? '' : 'none';
+            } else {
+                card.style.display = barcode.includes(query) ? '' : 'none';
+            }
         });
     }
 
