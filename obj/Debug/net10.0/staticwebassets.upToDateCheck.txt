@@ -4,6 +4,7 @@ wwwroot\css\dashboard.css
 wwwroot\css\invoice.css
 wwwroot\css\login.css
 wwwroot\css\product.css
+wwwroot\css\sale.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\invoice-illustration.png
@@ -69,7 +70,6 @@ wwwroot\lib\jquery\dist\jquery.slim.js
 wwwroot\lib\jquery\dist\jquery.slim.min.js
 wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
-wwwroot\css\sale.css
 D:\netcore\E-Invoice_system\wwwroot\css\app-base.css
 D:\netcore\E-Invoice_system\wwwroot\css\customer.css
 D:\netcore\E-Invoice_system\wwwroot\css\dashboard.css

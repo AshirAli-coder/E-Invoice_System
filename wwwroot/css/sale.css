@@ -169,7 +169,8 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     overflow-y: auto;
-    padding-bottom: 40px;
+    padding: 12px 4px 40px;
+    /* Added top/side padding to prevent clipping */
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
 }
@@ -280,6 +281,25 @@
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--text-main);
+}
+
+.btn-back-list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    padding: 6px 12px;
+    background: #fff5f5;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.btn-back-list:hover {
+    background: var(--primary);
+    color: white;
 }
 
 .checkout-header p {

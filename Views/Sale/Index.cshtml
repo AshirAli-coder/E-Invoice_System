@@ -1,36 +1,50 @@
 @model IEnumerable<E_Invoice_system.Models.Sale>
 
+@{
+    var sales = Model.Where(s => !s.qty_unit_type.Trim().StartsWith("-")).ToList();
+    var returns = Model.Where(s => s.qty_unit_type.Trim().StartsWith("-")).ToList();
+}
+
 <div class="card card-no-padding">
-    <div class="card-header card-header-flex" style="padding: 1.5rem 1.5rem 0 1.5rem;">
-        <div class="card-title">
-            Sales Transactions
-            <p class="text-muted font-sm font-normal" style="margin-top: 0.25rem;">Manage and track your business sales</p>
+    <div class="card-header card-header-flex" style="padding: 1.5rem 1.5rem 1.5rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05);">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div class="card-title" style="margin: 0;">Transaction Ledger</div>
+            <div class="index-toggle-pill">
+                <button type="button" class="toggle-btn active" id="btnShowSales" onclick="switchTable('sales')">
+                    <i class="ph-shopping-bag"></i> Sales
+                </button>
+                <button type="button" class="toggle-btn" id="btnShowReturns" onclick="switchTable('returns')">
+                    <i class="ph-arrow-counter-clockwise"></i> Returns
+                </button>
+            </div>
         </div>
         <a asp-action="Create" class="btn-primary">
             <i class="ph-plus-circle"></i> New Sale
         </a>
     </div>
     
-    <div class="table-responsive">
+    <!-- Sales Table -->
+    <div id="salesTableSection" class="table-responsive">
+        <div style="padding: 1rem 1.5rem; background: #f8fafc; border-bottom: 1px solid rgba(0,0,0,0.05);">
+            <span class="text-muted font-sm font-bold"><i class="ph-shopping-bag"></i> RECENT SALES</span>
+        </div>
         <table class="styled-table" style="min-width: 1000px;">
             <thead>
                 <tr>
                     <th style="padding-left: 1.5rem;">Date</th>
                     <th>Product / Service</th>
                     <th>Customer Name</th>
-                    <th>QTY / UNIT</th>
+                    <th>QTY</th>
                     <th>Price</th>
-                    <th>Expiry Date</th>
-                    <th>Total Amount</th>
+                    <th>Total</th>
                     <th class="text-center">Method</th>
-                    <th class="text-center">Status</th>
                     <th class="text-center" style="padding-right: 1.5rem;">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null && Model.Any())
+                @if (sales.Any())
                 {
-                    @foreach (var sale in Model)
+                    @foreach (var sale in sales)
                     {
                         <tr>
                             <td style="padding-left: 1.5rem;">
@@ -41,29 +55,17 @@
                                 <div class="font-bold">@sale.prod_name_service</div>
                             </td>
                             <td class="text-muted">@sale.customer_name</td>
-                            <td>
-                                @System.Text.RegularExpressions.Regex.Replace(sale.qty_unit_type ?? "", @"[^0-9.-]", "")
-                            </td>
+                            <td>@System.Text.RegularExpressions.Regex.Replace(sale.qty_unit_type ?? "", @"[^0-9.-]", "")</td>
                             <td class="text-muted">$@sale.price.ToString("N2")</td>
-                            <td class="text-muted">@(sale.expiry_date?.ToString("MMM dd, yyyy") ?? "N/A")</td>
                             <td>
                                 <div class="font-bold text-primary" style="font-size: 1rem;">$@sale.total_price.ToString("N2")</div>
-                                @if(sale.discount > 0) {
-                                    <div class="text-success font-xs">Saved $@sale.discount.ToString("N2")</div>
-                                }
                             </td>
                             <td class="text-center">
                                 <span class="font-medium font-sm">@sale.payment_method</span>
                             </td>
-                            <td class="text-center">
-                                <span class="status-badge" style="background: #e0f2fe; color: #0369a1;">
-                                    @sale.status
-                                </span>
-                            </td>
                             <td style="padding-right: 1.5rem;">
                                 <div class="actions-container actions-center">
-
-                                    <form asp-action="Delete" asp-route-id="@sale.id" method="post" onsubmit="return confirm('Are you sure you want to delete this sale record?');">
+                                    <form asp-action="Delete" asp-route-id="@sale.id" method="post" onsubmit="return confirm('Delete this sale record?');">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn-icon-sm btn-delete" title="Delete">
                                             <i class="ph-trash"></i>
@@ -76,16 +78,129 @@
                 }
                 else
                 {
-                    <tr>
-                        <td colspan="10" class="empty-state">
-                            <i class="ph-shopping-cart empty-state-icon"></i>
-                            <p>No sales records found.</p>
-                        </td>
-                    </tr>
+                    <tr><td colspan="8" class="empty-state"><p>No sales records found.</p></td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Returns Table (Hidden by default) -->
+    <div id="returnsTableSection" class="table-responsive" style="display: none;">
+        <div style="padding: 1rem 1.5rem; background: #fff5f5; border-bottom: 1px solid rgba(0,0,0,0.05);">
+            <span class="text-danger font-sm font-bold"><i class="ph-arrow-counter-clockwise"></i> RETURNS HISTORY</span>
+        </div>
+        <table class="styled-table" style="min-width: 1000px;">
+            <thead>
+                <tr>
+                    <th style="padding-left: 1.5rem;">Date</th>
+                    <th>Product / Service</th>
+                    <th>Customer Name</th>
+                    <th>QTY</th>
+                    <th>Refunded</th>
+                    <th class="text-center">Method</th>
+                    <th class="text-center" style="padding-right: 1.5rem;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (returns.Any())
+                {
+                    @foreach (var ret in returns)
+                    {
+                        <tr>
+                            <td style="padding-left: 1.5rem;">
+                                <div class="font-bold font-sm">@ret.date.ToString("MMM dd, yyyy")</div>
+                            </td>
+                            <td>
+                                <div class="font-bold">@ret.prod_name_service</div>
+                            </td>
+                            <td class="text-muted">@ret.customer_name</td>
+                            <td class="text-danger font-bold">@ret.qty_unit_type</td>
+                            <td class="text-danger font-bold">$@ret.total_price.ToString("N2")</td>
+                            <td class="text-center">
+                                <span class="font-medium font-sm">@ret.payment_method</span>
+                            </td>
+                            <td style="padding-right: 1.5rem;">
+                                <div class="actions-container actions-center">
+                                    <a asp-action="Details" asp-route-id="@ret.id" class="btn-icon-sm" style="color: var(--primary);" title="Return Details">
+                                        <i class="ph-file-text"></i> Details
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@ret.id" method="post" onsubmit="return confirm('Delete this return record?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-icon-sm btn-delete" title="Delete">
+                                            <i class="ph-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="7" class="empty-state"><p>No return records found.</p></td></tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+<style>
+    .index-toggle-pill {
+        display: flex;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 12px;
+        width: fit-content;
+    }
+
+    .toggle-btn {
+        border: none;
+        background: transparent;
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .toggle-btn i { font-size: 1rem; }
+
+    .toggle-btn.active {
+        background: #ffffff;
+        color: var(--primary);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .toggle-btn:not(.active):hover {
+        color: var(--text-main);
+        background: rgba(0,0,0,0.02);
+    }
+</style>
+
+<script>
+    function switchTable(type) {
+        const salesSection = document.getElementById('salesTableSection');
+        const returnsSection = document.getElementById('returnsTableSection');
+        const btnSales = document.getElementById('btnShowSales');
+        const btnReturns = document.getElementById('btnShowReturns');
+
+        if (type === 'sales') {
+            salesSection.style.display = 'block';
+            returnsSection.style.display = 'none';
+            btnSales.classList.add('active');
+            btnReturns.classList.remove('active');
+        } else {
+            salesSection.style.display = 'none';
+            returnsSection.style.display = 'block';
+            btnSales.classList.remove('active');
+            btnReturns.classList.add('active');
+        }
+    }
+</script>
 
 

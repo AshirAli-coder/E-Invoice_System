@@ -1,0 +1,88 @@
+@model E_Invoice_system.Models.Sale
+
+@{
+    Layout = "_Layout";
+    bool isReturn = Model.qty_unit_type?.Trim().StartsWith("-") ?? false;
+}
+
+<div class="card">
+    <div class="card-header card-header-flex">
+        <div class="card-title">
+            <i class="ph-file-text"></i> @(isReturn ? "Return" : "Sale") Transaction Details
+            <p class="text-muted font-sm font-normal">Transaction ID: #@Model.id | Date: @Model.date.ToString("MMM dd, yyyy HH:mm")</p>
+        </div>
+        <a asp-action="Index" class="btn-primary">
+            <i class="ph-arrow-left"></i> Back to Transactions
+        </a>
+    </div>
+
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+            <div>
+                <label class="text-muted font-xs font-bold text-uppercase">Customer Info</label>
+                <div class="font-bold" style="font-size: 1.1rem; margin-top: 0.5rem;">@Model.customer_name</div>
+                <div class="status-badge" style="margin-top: 0.5rem; background: #f0f9ff; color: #0369a1;">
+                    @Model.status
+                </div>
+            </div>
+            <div>
+                <label class="text-muted font-xs font-bold text-uppercase">Payment Method</label>
+                <div class="font-bold" style="font-size: 1.1rem; margin-top: 0.5rem;">
+                    <i class="ph-credit-card"></i> @Model.payment_method
+                </div>
+            </div>
+            <div>
+                <label class="text-muted font-xs font-bold text-uppercase">Transaction Type</label>
+                <div class="font-bold" style="font-size: 1.1rem; margin-top: 0.5rem; color: @(isReturn ? "var(--primary)" : "var(--success)")">
+                    <i class="@(isReturn ? "ph-arrow-counter-clockwise" : "ph-shopping-bag")"></i>
+                    @(isReturn ? "Customer Return" : "Standard Sale")
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #f8fafc; border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <h4 style="margin: 0;">Item Summary</h4>
+            </div>
+
+            <table class="styled-table no-border">
+                <thead>
+                    <tr>
+                        <th>Item Description</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-right">Unit Price</th>
+                        <th class="text-right">Discount</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="font-bold">@Model.prod_name_service</div>
+                            @if (!string.IsNullOrEmpty(Model.barcode)) {
+                                <div class="text-muted font-xs">SKU: @Model.barcode</div>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <span class="@(isReturn ? "text-danger font-bold" : "")">@Model.qty_unit_type</span>
+                        </td>
+                        <td class="text-right">$@Model.price.ToString("N2")</td>
+                        <td class="text-right text-success">-$@Model.discount.ToString("N2")</td>
+                        <td class="text-right">
+                            <div class="font-bold @(isReturn ? "text-danger" : "text-primary")" style="font-size: 1.25rem;">
+                                $@Model.total_price.ToString("N2")
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            @if (!string.IsNullOrEmpty(Model.description)) {
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #e2e8f0;">
+                    <label class="text-muted font-xs font-bold text-uppercase">Notes</label>
+                    <p style="margin-top: 0.5rem;">@Model.description</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
