@@ -38,6 +38,7 @@
                     <th>Price</th>
                     <th>Total</th>
                     <th class="text-center">Method</th>
+                    <th class="text-center">Status</th>
                     <th class="text-center" style="padding-right: 1.5rem;">Actions</th>
                 </tr>
             </thead>
@@ -63,6 +64,9 @@
                             <td class="text-center">
                                 <span class="font-medium font-sm">@sale.payment_method</span>
                             </td>
+                            <td class="text-center">
+                                <span class="status-badge" style="background: #ecfdf5; color: #065f46;">Paid</span>
+                            </td>
                             <td style="padding-right: 1.5rem;">
                                 <div class="actions-container actions-center">
                                     <form asp-action="Delete" asp-route-id="@sale.id" method="post" onsubmit="return confirm('Delete this sale record?');">
@@ -78,7 +82,7 @@
                 }
                 else
                 {
-                    <tr><td colspan="8" class="empty-state"><p>No sales records found.</p></td></tr>
+                    <tr><td colspan="9" class="empty-state"><p>No sales records found.</p></td></tr>
                 }
             </tbody>
         </table>
@@ -96,8 +100,10 @@
                     <th>Product / Service</th>
                     <th>Customer Name</th>
                     <th>QTY</th>
-                    <th>Refunded</th>
+                    <th>Price</th>
+                    <th>Total</th>
                     <th class="text-center">Method</th>
+                    <th class="text-center">Status</th>
                     <th class="text-center" style="padding-right: 1.5rem;">Actions</th>
                 </tr>
             </thead>
@@ -109,15 +115,22 @@
                         <tr>
                             <td style="padding-left: 1.5rem;">
                                 <div class="font-bold font-sm">@ret.date.ToString("MMM dd, yyyy")</div>
+                                <div class="text-muted font-xs">@ret.date.ToString("hh:mm tt")</div>
                             </td>
                             <td>
                                 <div class="font-bold">@ret.prod_name_service</div>
                             </td>
                             <td class="text-muted">@ret.customer_name</td>
-                            <td class="text-danger font-bold">@ret.qty_unit_type</td>
-                            <td class="text-danger font-bold">$@ret.total_price.ToString("N2")</td>
+                            <td class="text-danger font-bold">@System.Text.RegularExpressions.Regex.Replace(ret.qty_unit_type ?? "", @"[^0-9.-]", "")</td>
+                            <td class="text-muted">$@ret.price.ToString("N2")</td>
+                            <td>
+                                <div class="font-bold text-danger" style="font-size: 1rem;">$@ret.total_price.ToString("N2")</div>
+                            </td>
                             <td class="text-center">
                                 <span class="font-medium font-sm">@ret.payment_method</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="status-badge" style="background: #fff1f2; color: #9f1239;">Returned</span>
                             </td>
                             <td style="padding-right: 1.5rem;">
                                 <div class="actions-container actions-center">
@@ -137,7 +150,7 @@
                 }
                 else
                 {
-                    <tr><td colspan="7" class="empty-state"><p>No return records found.</p></td></tr>
+                    <tr><td colspan="9" class="empty-state"><p>No return records found.</p></td></tr>
                 }
             </tbody>
         </table>
