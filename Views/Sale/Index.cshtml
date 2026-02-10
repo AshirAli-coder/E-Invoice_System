@@ -134,9 +134,6 @@
                             </td>
                             <td style="padding-right: 1.5rem;">
                                 <div class="actions-container actions-center">
-                                    <a asp-action="Details" asp-route-id="@ret.id" class="btn-icon-sm" style="color: var(--primary);" title="Return Details">
-                                        <i class="ph-file-text"></i> Details
-                                    </a>
                                     <form asp-action="Delete" asp-route-id="@ret.id" method="post" onsubmit="return confirm('Delete this return record?');">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn-icon-sm btn-delete" title="Delete">

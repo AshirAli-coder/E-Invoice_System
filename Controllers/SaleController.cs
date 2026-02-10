@@ -145,17 +145,7 @@ namespace E_Invoice_system.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
-        public IActionResult Details(int id)
-        {
-            var sale = _context.sales.FirstOrDefault(s => s.id == id);
-            if (sale == null) return NotFound();
-            
-            ViewData["Title"] = sale.qty_unit_type.Trim().StartsWith("-") ? "Return Details" : "Sale Details";
-            return View(sale);
-        }
-
-        [HttpGet]
+        [HttpPost]
         public JsonResult GetProductDetails(int productId)
         {
             var product = _context.products_services.Find(productId);
