@@ -10,22 +10,31 @@ namespace E_Invoice_system.Models
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("original_sale_id")]
-        public int OriginalSaleId { get; set; }
+        [Column("sale_id")]
+        public int SaleId { get; set; }
 
         [Column("customer_name")]
         public string? CustomerName { get; set; }
 
-        [Column("product_name")]
-        public string? ProductName { get; set; }
+        [Column("date")]
+        public DateTime Date { get; set; }
 
-        [Column("return_qty")]
-        public decimal ReturnQty { get; set; }
+        [Column("prod_name/service")]
+        public string? ProdNameService { get; set; }
 
-        [Column("refund_amount")]
-        public decimal RefundAmount { get; set; }
+        [Column("barcode")]
+        public string? Barcode { get; set; }
 
-        [Column("return_date")]
-        public DateTime ReturnDate { get; set; }
+        [Column("qty/unit_type")]
+        public string? QtyUnitType { get; set; }
+
+        [Column("amount")]
+        public decimal Amount { get; set; }
+
+        [Column("method")]
+        public string? Method { get; set; }
+
+        [Column("status")]
+        public string? Status { get; set; }
     }
 }

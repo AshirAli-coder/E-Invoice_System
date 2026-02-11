@@ -144,8 +144,6 @@ namespace E_Invoice_system.Migrations
             migrationBuilder.DropTable(
                name: "sale_details");
 
-         
-
             migrationBuilder.DropTable(
                 name: "products_services");
 

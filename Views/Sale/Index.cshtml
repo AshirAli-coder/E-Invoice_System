@@ -1,4 +1,6 @@
+@model IEnumerable<E_Invoice_system.Models.Sale>
 @{
+    ViewData["Title"] = "Sales";
     var sales = Model.ToList();
     var returns = ViewBag.Returns as IEnumerable<E_Invoice_system.Models.ReturnDetail> ?? new List<E_Invoice_system.Models.ReturnDetail>();
 }
@@ -12,6 +14,18 @@
         <a asp-action="Create" class="btn-primary">
             <i class="ph-plus-circle"></i> New Sale
         </a>
+    </div>
+
+    <!-- Toggle Buttons -->
+    <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+        <div class="index-toggle-pill">
+            <button id="btnShowSales" class="toggle-btn active" onclick="switchTable('sales')">
+                <i class="ph-shopping-bag"></i> Sales
+            </button>
+            <button id="btnShowReturns" class="toggle-btn" onclick="switchTable('returns')">
+                <i class="ph-arrow-counter-clockwise"></i> Returns
+            </button>
+        </div>
     </div>
     
     <!-- Sales Table -->

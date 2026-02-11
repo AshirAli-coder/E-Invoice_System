@@ -122,12 +122,15 @@ namespace E_Invoice_system.Controllers
                             // Create return record
                             returnsToInsert.Add(new ReturnDetail
                             {
-                                OriginalSaleId = originalSale.id,
+                                SaleId = originalSale.id,
                                 CustomerName = customer_name,
-                                ProductName = item.prod_name_service,
-                                ReturnQty = Math.Abs(qty),
-                                RefundAmount = Math.Abs(item.total_price),
-                                ReturnDate = now
+                                ProdNameService = item.prod_name_service,
+                                Barcode = item.barcode, // Assuming item has barcode from input or lookup
+                                QtyUnitType = $"{Math.Abs(qty)} {unit}".Trim(), // Reconstruct qty string
+                                Amount = Math.Abs(item.total_price),
+                                Date = now,
+                                Method = "Refund", // Default method
+                                Status = "Returned"
                             });
                         }
                         else
@@ -144,12 +147,15 @@ namespace E_Invoice_system.Controllers
                              // Also create return record for the separate returns table
                             returnsToInsert.Add(new ReturnDetail
                             {
-                                OriginalSaleId = 0, // No original sale found
+                                SaleId = 0, // No original sale found
                                 CustomerName = customer_name,
-                                ProductName = item.prod_name_service,
-                                ReturnQty = Math.Abs(qty),
-                                RefundAmount = Math.Abs(item.total_price),
-                                ReturnDate = now
+                                ProdNameService = item.prod_name_service,
+                                Barcode = item.barcode,
+                                QtyUnitType = $"{Math.Abs(qty)} {unit}".Trim(),
+                                Amount = Math.Abs(item.total_price),
+                                Date = now,
+                                Method = "Refund",
+                                Status = "Returned"
                             });
                         }
                     }
