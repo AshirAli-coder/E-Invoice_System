@@ -51,6 +51,11 @@
                     <i class="ph-shopping-cart nav-icon"></i>
                     <span>Sales</span>
                 </a>
+
+                <a asp-controller="Return" asp-action="Index" class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Return" ? "active" : "")">
+                    <i class="ph-arrow-counter-clockwise nav-icon"></i>
+                    <span>Returns</span>
+                </a>
                 
                 <a asp-controller="Invoice" asp-action="Index" class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Invoice" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
                     <i class="ph-file-text nav-icon"></i>

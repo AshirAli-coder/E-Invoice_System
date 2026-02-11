@@ -1,22 +1,13 @@
-@model IEnumerable<E_Invoice_system.Models.Sale>
-
 @{
-    var sales = Model.Where(s => !s.qty_unit_type.Trim().StartsWith("-")).ToList();
-    var returns = Model.Where(s => s.qty_unit_type.Trim().StartsWith("-")).ToList();
+    var sales = Model.ToList();
+    var returns = ViewBag.Returns as IEnumerable<E_Invoice_system.Models.ReturnDetail> ?? new List<E_Invoice_system.Models.ReturnDetail>();
 }
 
 <div class="card card-no-padding">
     <div class="card-header card-header-flex" style="padding: 1.5rem 1.5rem 1.5rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05);">
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <div class="card-title" style="margin: 0;">Transaction Ledger</div>
-            <div class="index-toggle-pill">
-                <button type="button" class="toggle-btn active" id="btnShowSales" onclick="switchTable('sales')">
-                    <i class="ph-shopping-bag"></i> Sales
-                </button>
-                <button type="button" class="toggle-btn" id="btnShowReturns" onclick="switchTable('returns')">
-                    <i class="ph-arrow-counter-clockwise"></i> Returns
-                </button>
-            </div>
+            <p class="text-muted font-sm">A complete record of all sales transactions.</p>
         </div>
         <a asp-action="Create" class="btn-primary">
             <i class="ph-plus-circle"></i> New Sale
@@ -114,27 +105,27 @@
                     {
                         <tr>
                             <td style="padding-left: 1.5rem;">
-                                <div class="font-bold font-sm">@ret.date.ToString("MMM dd, yyyy")</div>
-                                <div class="text-muted font-xs">@ret.date.ToString("hh:mm tt")</div>
+                                <div class="font-bold font-sm">@ret.ReturnDate.ToString("MMM dd, yyyy")</div>
+                                <div class="text-muted font-xs">@ret.ReturnDate.ToString("hh:mm tt")</div>
                             </td>
                             <td>
-                                <div class="font-bold">@ret.prod_name_service</div>
+                                <div class="font-bold">@ret.ProductName</div>
                             </td>
-                            <td class="text-muted">@ret.customer_name</td>
-                            <td class="text-danger font-bold">@System.Text.RegularExpressions.Regex.Replace(ret.qty_unit_type ?? "", @"[^0-9.-]", "")</td>
-                            <td class="text-muted">$@ret.price.ToString("N2")</td>
+                            <td class="text-muted">@ret.CustomerName</td>
+                            <td class="text-danger font-bold">@ret.ReturnQty.ToString("G29")</td>
+                            <td class="text-muted">$@((ret.ReturnQty != 0 ? ret.RefundAmount / ret.ReturnQty : 0).ToString("N2"))</td>
                             <td>
-                                <div class="font-bold text-danger" style="font-size: 1rem;">$@ret.total_price.ToString("N2")</div>
+                                <div class="font-bold text-danger" style="font-size: 1rem;">$@ret.RefundAmount.ToString("N2")</div>
                             </td>
                             <td class="text-center">
-                                <span class="font-medium font-sm">@ret.payment_method</span>
+                                <span class="font-medium font-sm">Refund</span>
                             </td>
                             <td class="text-center">
                                 <span class="status-badge" style="background: #fff1f2; color: #9f1239;">Returned</span>
                             </td>
                             <td style="padding-right: 1.5rem;">
                                 <div class="actions-container actions-center">
-                                    <form asp-action="Delete" asp-route-id="@ret.id" method="post" onsubmit="return confirm('Delete this return record?');">
+                                    <form asp-action="DeleteReturn" asp-route-id="@ret.Id" method="post" onsubmit="return confirm('Delete this return record?');">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn-icon-sm btn-delete" title="Delete">
                                             <i class="ph-trash"></i>

@@ -21,6 +21,13 @@ namespace E_Invoice_system.Controllers
             var sales = _context.sales
                 .OrderByDescending(s => s.date)
                 .ToList();
+            
+            var returns = _context.returns
+                .OrderByDescending(r => r.ReturnDate)
+                .ToList();
+            
+            ViewBag.Returns = returns;
+
             return View(sales);
         }
 
@@ -53,6 +60,9 @@ namespace E_Invoice_system.Controllers
                 if (string.IsNullOrWhiteSpace(description)) description = null;
 
                 DateTime now = DateTime.Now;
+                var salesToInsert = new List<Sale>();
+                var returnsToInsert = new List<ReturnDetail>();
+
                 foreach (var item in items)
                 {
                     item.customer_name = customer_name;
@@ -63,27 +73,100 @@ namespace E_Invoice_system.Controllers
 
                     // Parse numeric quantity
                     decimal qty = 0;
+                    string unit = "";
                     if (!string.IsNullOrEmpty(item.qty_unit_type))
                     {
-                        var match = System.Text.RegularExpressions.Regex.Match(item.qty_unit_type.Trim(), @"^([0-9.-]+)");
+                        var match = System.Text.RegularExpressions.Regex.Match(item.qty_unit_type.Trim(), @"^([0-9.-]+)\s*(.*)$");
                         if (match.Success)
                         {
                             decimal.TryParse(match.Groups[1].Value, out qty);
+                            unit = match.Groups[2].Value;
                         }
                     }
 
                     // Calculate total
                     item.total_price = (item.price * qty) - item.discount;
 
-                        // Update Inventory
+                    // PROCESS AS RETURN
+                    if (qty < 0)
+                    {
+                        var originalSale = _context.sales
+                            .Where(s => s.customer_name == customer_name && s.prod_name_service == item.prod_name_service)
+                            .OrderByDescending(s => s.date)
+                            .FirstOrDefault();
+
+                        if (originalSale != null)
+                        {
+                            // Parse original quantity and UNIT
+                            decimal originalQty = 0;
+                            string originalUnit = "";
+                            var originalMatch = System.Text.RegularExpressions.Regex.Match(originalSale.qty_unit_type ?? "", @"^([0-9.-]+)\s*(.*)$");
+                            if (originalMatch.Success) 
+                            {
+                                decimal.TryParse(originalMatch.Groups[1].Value, out originalQty);
+                                originalUnit = originalMatch.Groups[2].Value;
+                            }
+
+                            // Update original sale: quantity and price
+                            decimal newQty = originalQty + qty; // qty is negative
+                            if (newQty < 0) newQty = 0;
+                            
+                            // Use originalUnit to preserve the unit type (e.g. "Pcs", "Kg")
+                            originalSale.qty_unit_type = $"{newQty} {originalUnit}".Trim();
+                            
+                            // Update total price based on new quantity
+                            // Assuming price is per unit. 
+                            originalSale.total_price = (originalSale.price * newQty) - originalSale.discount;
+                            _context.sales.Update(originalSale);
+
+                            // Create return record
+                            returnsToInsert.Add(new ReturnDetail
+                            {
+                                OriginalSaleId = originalSale.id,
+                                CustomerName = customer_name,
+                                ProductName = item.prod_name_service,
+                                ReturnQty = Math.Abs(qty),
+                                RefundAmount = Math.Abs(item.total_price),
+                                ReturnDate = now
+                            });
+                        }
+                        else
+                        {
+                            // Original sale not found, but we still want to record the return in the ledger
+                            // We can add a negative sale record to keep the ledger balanced if desired, 
+                            // or just add a ReturnDetail (which validates the return happened).
+                            // User asked to "change in sale index", so let's add a negative sale record 
+                            // if we can't find an original to update.
+                            
+                            item.total_price = (item.price * qty) - item.discount; // Negative total
+                            salesToInsert.Add(item);
+
+                             // Also create return record for the separate returns table
+                            returnsToInsert.Add(new ReturnDetail
+                            {
+                                OriginalSaleId = 0, // No original sale found
+                                CustomerName = customer_name,
+                                ProductName = item.prod_name_service,
+                                ReturnQty = Math.Abs(qty),
+                                RefundAmount = Math.Abs(item.total_price),
+                                ReturnDate = now
+                            });
+                        }
+                    }
+                    else
+                    {
+                        salesToInsert.Add(item);
+                    }
+
+                    // Update Inventory
                     var product = _context.products_services.FirstOrDefault(p => p.prod_name_service == item.prod_name_service);
                     if (product != null && !string.IsNullOrEmpty(product.qty_unit_type))
                     {
                         var prodMatch = System.Text.RegularExpressions.Regex.Match(product.qty_unit_type.Trim(), @"^([0-9.-]+)\s*(.*)$");
                         if (prodMatch.Success && decimal.TryParse(prodMatch.Groups[1].Value, out decimal currentQty))
                         {
-                            string unit = prodMatch.Groups[2].Value;
-                            if (!string.IsNullOrEmpty(unit)) unit = " " + unit;
+                            string prodUnit = prodMatch.Groups[2].Value;
+                            if (!string.IsNullOrEmpty(prodUnit)) prodUnit = " " + prodUnit;
                             
                             // Check for Stock Limit if selling (qty > 0)
                             if (qty > 0 && currentQty < qty)
@@ -98,14 +181,17 @@ namespace E_Invoice_system.Controllers
 
                             currentQty -= qty; // If qty is negative (return), this adds to stock.
                             
-                            product.qty_unit_type = $"{currentQty}{unit}";
+                            product.qty_unit_type = $"{currentQty}{prodUnit}";
                             _context.products_services.Update(product);
                         }
                     }
                 }
-                _context.sales.AddRange(items);
+                
+                if (salesToInsert.Any()) _context.sales.AddRange(salesToInsert);
+                if (returnsToInsert.Any()) _context.returns.AddRange(returnsToInsert);
+                
                 _context.SaveChanges();
-                TempData["Success"] = "Sale created successfully!";
+                TempData["Success"] = "Transaction processed successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -159,5 +245,19 @@ namespace E_Invoice_system.Controllers
                 name = product.prod_name_service
             });
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteReturn(int id)
+        {
+            var returnRecord = _context.returns.Find(id);
+            if (returnRecord != null)
+            {
+                _context.returns.Remove(returnRecord);
+                _context.SaveChanges();
+                TempData["Success"] = "Return record deleted.";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

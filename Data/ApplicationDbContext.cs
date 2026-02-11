@@ -17,6 +17,7 @@ namespace E_Invoice_system.Data
         public DbSet<invoices> invoices { get; set; }
        
         public DbSet<Sale> sales { get; set; }
+        public DbSet<ReturnDetail> returns { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -61,6 +62,14 @@ namespace E_Invoice_system.Data
 
             modelBuilder.Entity<invoices>()
                 .Property(i => i.total_price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<ReturnDetail>()
+                .Property(r => r.ReturnQty)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<ReturnDetail>()
+                .Property(r => r.RefundAmount)
                 .HasColumnType("decimal(18,2)");
         }
     }
