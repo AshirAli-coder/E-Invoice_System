@@ -3,8 +3,8 @@
     --primary: #BC1823;
     /* Brand Red */
     --primary-hover: #9c141d;
-    --primary-glow: rgba(188, 24, 35, 0.1);
-    --bg-app: #f1f5f9;
+    --primary-glow: rgba(188, 24, 35, 0.15);
+    --bg-app: #f4f7fa;
     --surface: #ffffff;
     --surface-hover: #f8fafc;
     --border: rgba(0, 0, 0, 0.05);
@@ -14,9 +14,10 @@
     --text-dim: #94a3b8;
     --success: #10b981;
     --danger: #ef4444;
-    --radius-xl: 24px;
-    --radius-lg: 16px;
-    --shadow-luxury: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+    --radius-xl: 32px;
+    --radius-lg: 20px;
+    --shadow-luxury: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.8);
 }
 
 .pos-container-v2 {
@@ -29,49 +30,64 @@
 
 /* 1. Category Sidebar */
 .category-sidebar {
-    background: #ffffff;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 24px 0;
-    gap: 16px;
+    padding: 32px 0;
+    gap: 20px;
+    z-index: 10;
 }
 
 .category-item {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     gap: 4px;
+    position: relative;
 }
 
 .category-item i {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
 }
 
 .category-item span {
-    font-size: 0.6rem;
-    font-weight: 700;
+    font-size: 0.55rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    opacity: 0.8;
 }
 
 .category-item:hover {
     color: var(--primary);
-    background: #fffafa;
+    background: rgba(188, 24, 35, 0.05);
+    transform: scale(1.05);
 }
 
 .category-item.active {
     background: var(--primary);
     color: #ffffff;
-    box-shadow: 0 8px 16px var(--primary-glow);
+    box-shadow: 0 12px 20px -8px var(--primary-glow);
+}
+
+.category-item.active::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    width: 4px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 4px 0 0 4px;
 }
 
 /* 2. Product Canvas */
@@ -93,21 +109,22 @@
 
 .search-bar-v2 {
     flex: 1;
-    height: 54px;
+    height: 56px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 18px;
     display: flex;
     align-items: center;
-    padding: 0 20px;
-    gap: 14px;
+    padding: 0 24px;
+    gap: 16px;
     box-shadow: var(--shadow-luxury);
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-bar-v2:focus-within {
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px var(--primary-glow);
+    box-shadow: 0 0 0 5px var(--primary-glow);
+    transform: translateY(-2px);
 }
 
 .search-bar-v2 i {
@@ -179,21 +196,38 @@
 .product-card-v2 {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 20px;
+    border-radius: 24px;
+    padding: 24px;
     position: relative;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    gap: 20px;
+    box-shadow: 0 4px 20px -10px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+}
+
+.product-card-v2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary);
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
 .product-card-v2:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-8px);
+    border-color: var(--primary-glow);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
+}
+
+.product-card-v2:hover::before {
+    opacity: 1;
 }
 
 .card-status-pill {
@@ -218,15 +252,21 @@
 }
 
 .card-icon {
-    width: 54px;
-    height: 54px;
-    background: #f8fafc;
-    border-radius: 16px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.75rem;
+    font-size: 1.8rem;
     color: var(--primary);
+    transition: transform 0.3s;
+}
+
+.product-card-v2:hover .card-icon {
+    transform: scale(1.1) rotate(-5deg);
+    background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
 }
 
 .card-name {
@@ -300,6 +340,7 @@
 .btn-back-list:hover {
     background: var(--primary);
     color: white;
+    transform: translateX(-4px);
 }
 
 .checkout-header p {
@@ -325,6 +366,7 @@
 .btn-clear-v2:hover {
     background: var(--danger);
     color: white;
+    transform: rotate(15deg) scale(1.1);
 }
 
 .customer-selector-v2 {
@@ -368,10 +410,11 @@
     border: none;
     color: var(--text-main);
     font-family: inherit;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
     outline: none;
     width: 100%;
+    appearance: none;
 }
 
 .checkout-items-v2 {
@@ -386,17 +429,20 @@
 .item-v2 {
     background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 16px;
+    border-radius: 20px;
+    padding: 18px;
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 12px;
-    transition: all 0.2s;
+    gap: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
 }
 
 .item-v2:hover {
     border-color: var(--primary-glow);
     background: #fffafa;
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.05);
 }
 
 .item-v2-main .title {
@@ -584,17 +630,45 @@
 
 .modal-overlay.show {
     display: flex;
+    animation: fadeInModal 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+
+    to {
+        opacity: 1;
+        backdrop-filter: blur(12px);
+    }
 }
 
 .payment-card {
-    background: #ffffff;
-    border: none;
-    border-radius: 32px;
-    max-width: 960px;
-    width: 90%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 40px;
+    max-width: 1000px;
+    width: 92%;
     overflow: hidden;
-    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 50px 120px -30px rgba(0, 0, 0, 0.3);
     display: flex;
+    transform: scale(1);
+    animation: slideUpModal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideUpModal {
+    from {
+        transform: translateY(40px) scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 
 .payment-left {
@@ -775,12 +849,67 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-confirm-web:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 24px -5px rgba(0, 0, 0, 0.1);
+.btn-confirm-web:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Custom Scrollbar */
+.product-grid-v2::-webkit-scrollbar,
+.checkout-items-v2::-webkit-scrollbar {
+    width: 6px;
+}
+
+.product-grid-v2::-webkit-scrollbar-track,
+.checkout-items-v2::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.product-grid-v2::-webkit-scrollbar-thumb,
+.checkout-items-v2::-webkit-scrollbar-thumb {
+    background: var(--border-bright);
+    border-radius: 10px;
+}
+
+.product-grid-v2::-webkit-scrollbar-thumb:hover,
+.checkout-items-v2::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dim);
 }
 
 /* 4. Responsive Design */
+
+
+/* Entry Animations */
+.reveal-fade {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.reveal-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 @media (max-width: 1200px) {
     .pos-container-v2 {

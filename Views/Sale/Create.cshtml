@@ -5,7 +5,7 @@
     var products = ViewBag.Products as List<E_Invoice_system.Models.ProductService>;
 }
 
-<div class="pos-container-v2">
+<div class="pos-container-v2 reveal-fade">
     <!-- Left: Slim Category Sidebar -->
     <aside class="category-sidebar">
         <div class="category-item active" onclick="filterByCategory('all')">
@@ -31,7 +31,7 @@
         <div class="canvas-header">
             <div class="search-bar-v2">
                 <i class="ph-magnifying-glass"></i>
-                <input type="text" id="prodSearch" placeholder="Search products or scan barcode..." oninput="filterProducts()" />
+                <input type="text" id="prodSearch" placeholder="Search products or scan barcode..." oninput="filterProducts()" autocomplete="off" />
             </div>
             
             <div class="search-toggle-v2">
@@ -73,7 +73,8 @@
                         }
                     }
 
-                    <div class="product-card-v2" 
+                    <div class="product-card-v2 reveal-up" 
+                         style="animation-delay: @(products.IndexOf(p) * 0.05)s"
                          data-name="@p.prod_name_service.ToLower()" 
                          data-barcode="@(p.barcode?.ToLower() ?? "")" 
                          data-stock="@stockValue" 
@@ -126,7 +127,7 @@
                         <label for="modeReturn">Return</label>
                     </div>
                 </div>
-                <button type="button" class="btn-clear-v2" onclick="clearSaleItems()">
+                <button type="button" class="btn-clear-v2" onclick="clearSaleItems()" title="Clear Order">
                     <i class="ph-trash"></i>
                 </button>
             </div>
