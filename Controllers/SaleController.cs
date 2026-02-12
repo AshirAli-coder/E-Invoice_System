@@ -252,11 +252,51 @@ namespace E_Invoice_system.Controllers
         {
             if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(productName))
             {
-                return Json(new { hasPurchased = false });
+                return Json(new { hasPurchased = false, purchasedQty = 0 });
             }
 
-            var hasPurchased = _context.sales.Any(s => s.customer_name == customerName && s.prod_name_service == productName);
-            return Json(new { hasPurchased = hasPurchased });
+            var sales = _context.sales
+                .Where(s => s.customer_name == customerName && s.prod_name_service == productName)
+                .ToList();
+
+            decimal totalPurchased = 0;
+            foreach (var s in sales)
+            {
+                var match = System.Text.RegularExpressions.Regex.Match(s.qty_unit_type ?? "", @"^([0-9.-]+)");
+                if (match.Success && decimal.TryParse(match.Groups[1].Value, out decimal q))
+                {
+                    if (q > 0) totalPurchased += q;
+                    // Note: We don't subtract returns here because the system updates the original sale record's quantity when a return is processed. 
+                    // So originalSale.qty_unit_type always reflects the REMAINING quantity available to return.
+                }
+            }
+
+            return Json(new { 
+                hasPurchased = totalPurchased > 0, 
+                purchasedQty = totalPurchased 
+            });
+        }
+
+        [HttpGet]
+        public JsonResult CheckAnyPurchaseHistory(string customerName)
+        {
+            if (string.IsNullOrEmpty(customerName))
+            {
+                return Json(new { hasAnyHistory = false });
+            }
+
+            // Check for any sales where qty > 0 (using the same parsing logic as Index)
+            var sales = _context.sales.Where(s => s.customer_name == customerName).ToList();
+            var hasAnyHistory = sales.Any(s => {
+                var match = System.Text.RegularExpressions.Regex.Match(s.qty_unit_type ?? "", @"^([0-9.-]+)");
+                if (match.Success && decimal.TryParse(match.Groups[1].Value, out decimal q))
+                {
+                    return q > 0;
+                }
+                return false;
+            });
+
+            return Json(new { hasAnyHistory = hasAnyHistory });
         }
 
         [HttpPost]
