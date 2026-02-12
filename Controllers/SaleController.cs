@@ -18,15 +18,21 @@ namespace E_Invoice_system.Controllers
         public IActionResult Index()
         {
             ViewData["Title"] = "Sales";
+            // Filter out sales where qty is 0 (fully returned)
             var sales = _context.sales
+                .AsEnumerable() // Pull to memory to handle string parsing safely in C#
+                .Where(s => {
+                    var match = System.Text.RegularExpressions.Regex.Match(s.qty_unit_type ?? "", @"^([0-9.-]+)");
+                    if (match.Success && decimal.TryParse(match.Groups[1].Value, out decimal q))
+                    {
+                        return q > 0;
+                    }
+                    return true; // Keep it if we can't parse it (safety)
+                })
                 .OrderByDescending(s => s.date)
                 .ToList();
             
-            var returns = _context.returns
-                .OrderByDescending(r => r.Date)
-                .ToList();
-            
-            ViewBag.Returns = returns;
+            ViewBag.Returns = _context.returns.OrderByDescending(r => r.Date).ToList();
 
             return View(sales);
         }
@@ -107,15 +113,20 @@ namespace E_Invoice_system.Controllers
                                 originalUnit = originalMatch.Groups[2].Value;
                             }
 
-                            // Update original sale: quantity and price
+                            // Calculate new quantity
                             decimal newQty = originalQty + qty; // qty is negative
                             if (newQty < 0) newQty = 0;
+
+                            // PRORATE DISCOUNT
+                            // We need to adjust original discount based on remaining items
+                            decimal unitDiscount = originalQty > 0 ? originalSale.discount / originalQty : 0;
+                            decimal newDiscount = unitDiscount * newQty;
+                            decimal returnDiscount = unitDiscount * Math.Abs(qty);
                             
-                            // Use originalUnit to preserve the unit type (e.g. "Pcs", "Kg")
+                            // Update original sale: quantity, discount and price
                             originalSale.qty_unit_type = $"{newQty} {originalUnit}".Trim();
-                            
-                            // Update total price based on new quantity
-                            originalSale.total_price = (originalSale.price * newQty) - originalSale.discount;
+                            originalSale.discount = newDiscount;
+                            originalSale.total_price = (originalSale.price * newQty) - newDiscount;
                             _context.sales.Update(originalSale);
 
                             // Create return record
@@ -127,7 +138,7 @@ namespace E_Invoice_system.Controllers
                                 ProdNameService = item.prod_name_service,
                                 Barcode = item.barcode,
                                 QtyUnitType = $"{Math.Abs(qty)} {unit}".Trim(),
-                                Amount = Math.Abs(item.total_price),
+                                Amount = (originalSale.price * Math.Abs(qty)) - returnDiscount,
                                 Method = payment_method,
                                 Status = "Return"
                             });

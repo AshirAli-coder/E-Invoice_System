@@ -25,11 +25,20 @@ namespace E_Invoice_system.Controllers
             ViewBag.TotalCustomers = _context.customers.Count();
             ViewBag.TotalProducts = _context.products_services.Count();
 
-            // ✅ TOTAL SALES AMOUNT
+            // ✅ TOTAL SALES AMOUNT (Filtered: excluding 0 quantity / fully returned)
             decimal totalSales = _context.sales
-                .Sum(s => (decimal?)s.total_price) ?? 0;
+                .AsEnumerable()
+                .Where(s => {
+                    var match = System.Text.RegularExpressions.Regex.Match(s.qty_unit_type ?? "", @"^([0-9.-]+)");
+                    if (match.Success && decimal.TryParse(match.Groups[1].Value, out decimal q))
+                    {
+                        return q > 0;
+                    }
+                    return true;
+                })
+                .Sum(s => s.total_price);
 
-            ViewBag.TotalSales = totalSales;
+            ViewBag.totalSales = Math.Max(0, totalSales);
 
             // Invoice Status Chart
             var invoiceStatusData = _context.invoices

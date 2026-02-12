@@ -28,7 +28,7 @@
             
         </div>
         <div class="stat-label">Total Sale</div>
-        <div class="stat-value">$@ViewBag.totalSales</div>
+        <div class="stat-value">$@(((decimal?)ViewBag.totalSales ?? 0).ToString("N2"))</div>
     </div>
 
     <div class="stat-card">
