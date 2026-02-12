@@ -115,7 +115,6 @@ namespace E_Invoice_system.Controllers
                             originalSale.qty_unit_type = $"{newQty} {originalUnit}".Trim();
                             
                             // Update total price based on new quantity
-                            // Assuming price is per unit. 
                             originalSale.total_price = (originalSale.price * newQty) - originalSale.discount;
                             _context.sales.Update(originalSale);
 
@@ -125,31 +124,6 @@ namespace E_Invoice_system.Controllers
                                 SaleId = originalSale.id,
                                 CustomerName = customer_name,
                                 ProdNameService = item.prod_name_service,
-                                Barcode = item.barcode, // Assuming item has barcode from input or lookup
-                                QtyUnitType = $"{Math.Abs(qty)} {unit}".Trim(), // Reconstruct qty string
-                                Amount = Math.Abs(item.total_price),
-                                Date = now,
-                                Method = "Refund", // Default method
-                                Status = "Returned"
-                            });
-                        }
-                        else
-                        {
-                            // Original sale not found, but we still want to record the return in the ledger
-                            // We can add a negative sale record to keep the ledger balanced if desired, 
-                            // or just add a ReturnDetail (which validates the return happened).
-                            // User asked to "change in sale index", so let's add a negative sale record 
-                            // if we can't find an original to update.
-                            
-                            item.total_price = (item.price * qty) - item.discount; // Negative total
-                            salesToInsert.Add(item);
-
-                             // Also create return record for the separate returns table
-                            returnsToInsert.Add(new ReturnDetail
-                            {
-                                SaleId = 0, // No original sale found
-                                CustomerName = customer_name,
-                                ProdNameService = item.prod_name_service,
                                 Barcode = item.barcode,
                                 QtyUnitType = $"{Math.Abs(qty)} {unit}".Trim(),
                                 Amount = Math.Abs(item.total_price),
@@ -157,6 +131,14 @@ namespace E_Invoice_system.Controllers
                                 Method = "Refund",
                                 Status = "Returned"
                             });
+                        }
+                        else
+                        {
+                            // No original sale found - validation error
+                            ModelState.AddModelError("", $"No previous sale found for '{item.prod_name_service}' under customer '{customer_name}'. Return denied.");
+                            ViewBag.Customers = _context.customers.Where(c => c.status == "Active").ToList();
+                            ViewBag.Products = _context.products_services.Where(p => p.status == "Available").ToList();
+                            return View(item); 
                         }
                     }
                     else
