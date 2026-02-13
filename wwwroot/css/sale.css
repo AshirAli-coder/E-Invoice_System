@@ -51,13 +51,15 @@
     justify-content: center;
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     gap: 4px;
     position: relative;
+    user-select: none;
 }
 
 .category-item i {
     font-size: 1.4rem;
+    transition: transform 0.3s ease;
 }
 
 .category-item span {
@@ -71,12 +73,23 @@
 .category-item:hover {
     color: var(--primary);
     background: rgba(188, 24, 35, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(188, 24, 35, 0.1);
+}
+
+.category-item:hover i {
+    transform: scale(1.1);
+}
+
+.category-item:active {
+    transform: scale(0.92);
 }
 
 .category-item.active {
     background: var(--primary);
     color: #ffffff;
-    box-shadow: 0 12px 20px -8px var(--primary-glow);
+    box-shadow: 0 12px 24px -8px rgba(188, 24, 35, 0.4);
+    animation: sidebarPulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .category-item.active::after {
@@ -84,9 +97,36 @@
     position: absolute;
     right: -2px;
     width: 4px;
-    height: 20px;
+    height: 24px;
     background: var(--primary);
     border-radius: 4px 0 0 4px;
+    animation: indicatorIn 0.3s ease-out;
+}
+
+@keyframes sidebarPulse {
+    0% {
+        transform: scale(0.9);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes indicatorIn {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+
+    to {
+        height: 24px;
+        opacity: 1;
+    }
 }
 
 /* 2. Product Canvas */
