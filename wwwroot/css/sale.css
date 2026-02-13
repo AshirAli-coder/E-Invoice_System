@@ -22,92 +22,51 @@
 
 .pos-container-v2 {
     display: grid;
-    grid-template-columns: 90px 1fr 480px;
+    grid-template-columns: 1fr 450px;
     height: calc(100vh - 64px);
     background: var(--bg-app);
     overflow: hidden;
 }
 
-/* 1. Category Sidebar */
-.category-sidebar {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid var(--border);
+/* 2. Category Tabs (New) */
+.category-tabs-v2 {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 0;
-    gap: 24px;
-    z-index: 10;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 0 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
 }
 
-.category-item {
-    width: 68px;
-    height: 68px;
-    border-radius: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-dim);
+.category-tabs-v2::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-item {
+    padding: 10px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s ease;
-    gap: 6px;
-    position: relative;
-    user-select: none;
+    white-space: nowrap;
+    box-shadow: var(--shadow-luxury);
 }
 
-
-.category-item i {
-    font-size: 1.6rem;
-    transition: transform 0.2s ease;
-}
-
-.category-item span {
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-}
-
-.category-item:hover {
+.tab-item:hover {
+    border-color: var(--primary-glow);
     color: var(--primary);
-    background: rgba(188, 24, 35, 0.04);
+    background: #fffafa;
 }
 
-.category-item:hover i {
-    transform: scale(1.1);
-}
-
-.category-item:hover span {
-    opacity: 1;
-}
-
-.category-item:active {
-    transform: scale(0.95);
-}
-
-.category-item.active {
+.tab-item.active {
     background: var(--primary);
     color: #ffffff;
-    box-shadow: 0 8px 24px -5px rgba(188, 24, 35, 0.3);
-}
-
-.category-item.active span {
-    opacity: 1;
-}
-
-.category-item.active::after {
-    content: '';
-    position: absolute;
-    right: -2px;
-    width: 5px;
-    height: 32px;
-    background: var(--primary);
-    border-radius: 4px 0 0 4px;
+    border-color: var(--primary);
+    box-shadow: 0 8px 20px -5px var(--primary-glow);
 }
 
 /* 2. Product Canvas */
@@ -121,9 +80,17 @@
 
 .canvas-header {
     display: flex;
+    flex-direction: column;
+    /* Stack tabs and search */
+    align-items: stretch;
+    margin-bottom: 24px;
+    gap: 16px;
+}
+
+.canvas-header-bottom {
+    display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 32px;
     gap: 24px;
 }
 
@@ -934,33 +901,6 @@
         overflow-y: auto;
     }
 
-    .category-sidebar {
-        flex-direction: row;
-        width: 100%;
-        height: auto;
-        padding: 12px 20px;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        overflow-x: auto;
-        justify-content: flex-start;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    .category-item {
-        flex: 0 0 auto;
-        width: auto;
-        height: 40px;
-        padding: 0 16px;
-        flex-direction: row;
-        gap: 8px;
-    }
-
-    .category-item span {
-        font-size: 0.75rem;
-    }
-
     .product-canvas {
         padding: 20px;
         overflow: visible;
@@ -976,25 +916,6 @@
     .checkout-items-v2 {
         max-height: none;
         overflow-y: visible;
-    }
-
-    .payment-card {
-        flex-direction: column;
-        width: 95%;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    .payment-left,
-    .payment-right {
-        padding: 30px;
-        flex: none;
-        width: 100%;
-    }
-
-    .payment-left {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
     }
 }
 
