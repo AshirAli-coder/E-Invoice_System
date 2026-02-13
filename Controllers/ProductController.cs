@@ -40,15 +40,17 @@ namespace E_Invoice_system.Controllers
             // Handle Image Upload
             if (imageFile != null && imageFile.Length > 0)
             {
-                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string storagePath = @"D:\netcore\E-Invoice_system\bin\Debug\images";
+                if (!Directory.Exists(storagePath)) Directory.CreateDirectory(storagePath);
+
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                string path = Path.Combine(wwwRootPath, "savepic", fileName);
+                string path = Path.Combine(storagePath, fileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
                     await imageFile.CopyToAsync(fileStream);
                 }
-                product.image_path = "/savepic/" + fileName;
+                product.image = fileName;
             }
             // Auto-generate barcode if empty
             if (string.IsNullOrWhiteSpace(product.barcode))
@@ -132,17 +134,18 @@ namespace E_Invoice_system.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProductService product, IFormFile? imageFile)
         {
-            // Handle Image Upload
             if (imageFile != null && imageFile.Length > 0)
             {
-                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string storagePath = @"D:\netcore\E-Invoice_system\bin\Debug\images";
+                if (!Directory.Exists(storagePath)) Directory.CreateDirectory(storagePath);
+
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                string path = Path.Combine(wwwRootPath, "savepic", fileName);
+                string path = Path.Combine(storagePath, fileName);
 
                 // Delete old image if exists
-                if (!string.IsNullOrEmpty(product.image_path))
+                if (!string.IsNullOrEmpty(product.image))
                 {
-                    var oldPath = Path.Combine(wwwRootPath, product.image_path.TrimStart('/'));
+                    var oldPath = product.image;
                     if (System.IO.File.Exists(oldPath))
                     {
                         System.IO.File.Delete(oldPath);
@@ -153,7 +156,7 @@ namespace E_Invoice_system.Controllers
                 {
                     await imageFile.CopyToAsync(fileStream);
                 }
-                product.image_path = "/savepic/" + fileName;
+                product.image = fileName;
             }
             // Auto-generate barcode if empty on edit
             if (string.IsNullOrWhiteSpace(product.barcode))

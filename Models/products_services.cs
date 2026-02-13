@@ -31,8 +31,8 @@ namespace E_Invoice_system.Models
         [Column("tax")]
         public decimal tax { get; set; }
 
-        [Column("image_path")]
-        public string? image_path { get; set; }
+        [Column("image")]
+        public string? image { get; set; }
 
         [Column("status")]
         public string? status { get; set; }

@@ -76,8 +76,17 @@
                                 @(stockValue <= 0 ? "Out of Stock" : $"{stockValue} Available")
                             }
                         </div>
-                        <div class="card-icon">
-                            <i class="@(isService ? "ph-wrench" : "ph-cube-transparent")"></i>
+                        <div class="card-image">
+                            @if (!string.IsNullOrEmpty(p.image))
+                            {
+                                <img src="/product-images/@p.image" alt="Product" />
+                            }
+                            else
+                            {
+                                <div class="image-placeholder">
+                                    <i class="@(isService ? "ph-wrench" : "ph-cube-transparent")"></i>
+                                </div>
+                            }
                         </div>
                         <div class="card-info">
                             <h4 class="card-name">@p.prod_name_service</h4>

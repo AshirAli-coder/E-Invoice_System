@@ -29,6 +29,16 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// Serve images from bin/Debug/images
+string imagesPath = Path.Combine(app.Environment.ContentRootPath, "bin", "Debug", "images");
+if (!Directory.Exists(imagesPath)) Directory.CreateDirectory(imagesPath);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(imagesPath),
+    RequestPath = "/product-images"
+});
+
 app.UseRouting();
 
 // ✅ USE SESSION (Routing ke baad, Authorization se pehle)

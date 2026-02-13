@@ -72,7 +72,7 @@ namespace E_Invoice_system.Migrations
                     description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     tax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    image_path = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

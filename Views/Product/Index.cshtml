@@ -29,9 +29,9 @@
                     <tr>
                         <td class="font-bold" style="padding-left: 1.5rem;">#@item.id</td>
                         <td>
-                            @if (!string.IsNullOrEmpty(item.image_path))
+                            @if (!string.IsNullOrEmpty(item.image))
                             {
-                                <img src="@item.image_path" alt="Product" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
+                                <img src="/product-images/@item.image" alt="Product" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" />
                             }
                             else
                             {
@@ -42,7 +42,7 @@
                         </td>
                         <td class="font-medium">@item.prod_name_service</td>
                         <td>@(item.barcode ?? "-")</td>
-                        <td>@System.Text.RegularExpressions.Regex.Replace(item.qty_unit_type ?? "", @"[^0-9.-]", "")</td>
+                        <td>@item.qty_unit_type</td>
                         <td class="font-bold">$@item.price.ToString("F2")</td>
                         <td class="text-danger font-medium">$@item.discount.ToString("F2")</td>
                         <td>

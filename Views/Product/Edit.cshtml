@@ -11,10 +11,11 @@
     </div>
 
     <div class="form-wrapper form-layout-left-wide">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="id" />
             <input type="hidden" asp-for="date" />
+            <input type="hidden" asp-for="image" />
 
             <div class="form-section">
                 <div class="form-section-header">
@@ -23,6 +24,27 @@
                        Product Information
                    </h3>
                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Current Image</label>
+                    <div class="mb-3">
+                        @if (!string.IsNullOrEmpty(Model.image))
+                        {
+                            <img src="/product-images/@Model.image" alt="Product Image" style="width: 150px; border-radius: 12px; border: 1px solid var(--border);" />
+                        }
+                        else
+                        {
+                            <div style="width: 150px; height: 100px; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-dim); border: 1px dashed var(--border);">
+                                <i class="ph-image" style="font-size: 2rem;"></i>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Update Image</label>
+                    <input type="file" name="imageFile" class="form-control" accept="image/*" />
+                </div>
                 
                 <div class="form-group">
                     <label asp-for="prod_name_service" class="form-label">Item/Service Name</label>
