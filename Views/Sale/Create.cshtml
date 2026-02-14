@@ -5,61 +5,45 @@
     var products = ViewBag.Products as List<E_Invoice_system.Models.ProductService>;
 }
 
-<div class="saas-pos-container">
-    <!-- Main Discovery Section -->
-    <div class="discovery-canvas">
-        <!-- Integrated Dashboard Toolbar -->
-        <header class="saas-toolbar">
-            <div class="toolbar-branding">
-                <div class="terminal-id">
-                    <span class="badge-pro">PRO</span>
-                    <h1>Terminal 01</h1>
+<div class="pos-container-v2">
+    <!-- Center: Product Discovery -->
+    <div class="product-canvas">
+        <div class="canvas-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div>
+                    <h1 style="margin: 0; font-size: 1.75rem; font-weight: 800; color: var(--text-main);">Sales Transaction</h1>
+                    <p style="margin: 4px 0 0; font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">
+                        @DateTime.Now.ToString("MMMM dd, yyyy - dddd")
+                    </p>
                 </div>
-                <div class="session-meta">
-                    <span id="terminalClock" class="clock-tabular">00:00:00</span>
-                    <span class="divider"></span>
-                    <span class="date-label">@DateTime.Now.ToString("ddd, MMM dd")</span>
-                </div>
-            </div>
-
-            <div class="toolbar-search">
-                <div class="search-unified">
-                    <i class="ph-magnifying-glass"></i>
-                    <input type="text" id="prodSearch" placeholder="Search item or scan barcode..." oninput="filterProducts()" autocomplete="off" />
-                    <div class="search-divider"></div>
-                    <div class="search-opts">
-                        <input type="radio" id="searchName" name="searchMode" value="name" checked onchange="handleSearchModeChange()">
-                        <label for="searchName">Name</label>
-                        <input type="radio" id="searchBarcode" name="searchMode" value="barcode" onchange="handleSearchModeChange()">
-                        <label for="searchBarcode">Barcode</label>
-                    </div>
+                <div class="search-bar-v2" style="width: 400px; height: 50px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <i class="ph-magnifying-glass" style="margin-left: 16px;"></i>
+                    <input type="text" id="prodSearch" placeholder="Search products..." oninput="filterProducts()" style="padding: 12px; background: transparent; border: none; outline: none; width: 100%; font-weight: 600;">
                 </div>
             </div>
 
-            <div class="toolbar-actions">
-                <a href="@Url.Action("Index", "Sale")" class="btn-dashboard-back">
-                    <i class="ph-squares-four"></i>
-                    <span>Dashboard</span>
-                </a>
-            </div>
-        </header>
-
-        <!-- Quick Filter Hub -->
-        <div class="filter-hub">
-            <div class="filter-group">
-                <span class="filter-caption">DISCOVERY</span>
-                <div class="filter-pills">
-                    <div class="pill-item active" onclick="filterByCategory('all')">All Items</div>
-                    <div class="pill-item" onclick="filterByCategory('products')">Products</div>
-                    <div class="pill-item" onclick="filterByCategory('services')">Services</div>
-                    <div class="pill-item" onclick="filterByCategory('fav')">Regulars</div>
-                </div>
+            <div class="category-tabs-v2" style="margin-bottom: 32px;">
+                <div class="tab-item active" onclick="filterByCategory('all', this)">All Products</div>
+                <div class="tab-item" onclick="filterByCategory('Foods', this)">Foods</div>
+                <div class="tab-item" onclick="filterByCategory('Beverages', this)">Beverages</div>
+                <div class="tab-item" onclick="filterByCategory('Others', this)">Others</div>
             </div>
         </div>
 
-        <!-- Scrollable Discovery Grid -->
-        <div class="discovery-grid-wrapper" id="productGrid">
+
+        <div class="product-grid-v2" id="productGrid">
+            <!-- Add New Product Card (Pic 2 Match) -->
+            <div class="product-card-v2" style="border: 2px dashed #e2e8f0; display: flex; align-items: center; justify-content: center; background: #f8fafc;" onclick="location.href='/Product/Create'">
+                <div style="text-align: center;">
+                    <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <i class="ph-plus" style="font-size: 1.5rem; color: var(--success);"></i>
+                    </div>
+                    <span style="font-weight: 700; color: var(--text-muted); font-size: 0.9rem;">Add New Product</span>
+                </div>
+            </div>
+
             @if (products != null)
+
             {
                 foreach (var p in products)
                 {
@@ -79,76 +63,82 @@
                                 isService = true;
                             }
                         }
+                        else
+                        {
+                            // Fallback if regex fails (shouldn't happen with this pattern)
+                            isService = true;
+                            unitLabel = p.qty_unit_type;
+                        }
                     }
 
-                    <div class="pro-product-card" 
-                         data-category="@(isService ? "service" : "product")" 
+                    <div class="product-card-v2" 
                          data-name="@p.prod_name_service.ToLower()" 
-                         data-barcode="@(p.barcode?.ToLower() ?? "")"
-                         onclick="addToSaleFromCard(@p.id, '@p.prod_name_service', @p.price, @p.discount, '@(p.expiry_date?.ToString("yyyy-MM-dd"))', '@(p.barcode ?? "")', @stockValue)">
+                         data-barcode="@(p.barcode?.ToLower() ?? "")" 
+                         data-stock="@stockValue" 
+                         data-type="@(isService ? "service" : "product")"
+                         onclick="addToSaleFromCard(@p.id, '@p.prod_name_service', @p.price, @p.discount, '@(p.expiry_date?.ToString("yyyy-MM-dd"))', '@(p.barcode ?? "")', @stockValue, '@p.image')">
                         
-                        <div class="card-visual">
+                        <div class="card-image">
                             @if (!string.IsNullOrEmpty(p.image))
                             {
                                 <img src="/product-images/@p.image" alt="Product" />
                             }
                             else
                             {
-                                <div class="visual-placeholder">
-                                    <i class="@(isService ? "ph-wrench" : "ph-cube-transparent")"></i>
+                                <div class="image-placeholder">
+                                    <i class="@(isService ? "ph-wrench" : "ph-cube-transparent")" style="font-size: 3rem; color: #cbd5e1;"></i>
                                 </div>
                             }
-                            <span class="stock-pill @(stockValue <= 0 && !isService ? "out" : "in")">
-                                @if (isService) {
-                                    <span><i class="ph-sparkle"></i> @unitLabel Service</span>
-                                } else {
-                                    @(stockValue <= 0 ? "Out of Stock" : $"{stockValue} Available")
-                                }
-                            </span>
                         </div>
-                        
                         <div class="card-info">
-                            <h3 class="item-name">@p.prod_name_service</h3>
-                            <div class="item-price-row">
-                                <span class="currency">$</span>
-                                <span class="price-val">@p.price.ToString("N2")</span>
+                            <h4 class="card-name">@p.prod_name_service</h4>
+                            <div class="card-price-row">
+                                <span class="price-tag">$@p.price.ToString("N2")</span>
                                 @if (p.discount > 0)
                                 {
-                                    <span class="discount-badge">-@p.discount.ToString("N0")%</span>
+                                    <span class="discount-pill">-$@p.discount.ToString("N2")</span>
                                 }
                             </div>
                         </div>
                     </div>
+
                 }
             }
         </div>
     </div>
 
-    <!-- Professional Order Sidebar -->
-    <aside class="order-sidebar">
-        <form asp-action="Create" method="post" id="saleForm" class="sidebar-form">
+    <!-- Right: Checkout Center -->
+    <div class="checkout-center">
+        <form asp-action="Create" method="post" id="saleForm" class="checkout-form">
             @Html.AntiForgeryToken()
             <input type="hidden" name="payment_method" id="hiddenPaymentMethod" value="Cash" />
             <input type="hidden" name="status" id="hiddenStatus" value="Paid" />
             
-            <div class="cart-header">
-                <div class="cart-title">
-                    <h2>Current Order</h2>
-                    <span class="badge-items" id="itemCountDisplay">0 items</span>
-                </div>
-                <div class="mode-toggle-saas">
-                    <input type="radio" id="modeSale" name="transMode" value="sale" checked onchange="handleModeChange()">
-                    <label for="modeSale">Sale</label>
-                    <input type="radio" id="modeReturn" name="transMode" value="return" onchange="handleModeChange()">
-                    <label for="modeReturn">Return</label>
+            <div class="checkout-header">
+                <div>
+                    <h3 style="margin: 0;">Order Detail</h3>
                 </div>
             </div>
 
-            <div class="customer-entry">
-                <div class="input-integrated">
+                <div class="mode-toggle-v2 compact">
+                    <div class="toggle-pill">
+                        <input type="radio" id="modeSale" name="transMode" value="sale" checked onchange="handleModeChange()">
+                        <label for="modeSale">Sale</label>
+                        <input type="radio" id="modeReturn" name="transMode" value="return" onchange="handleModeChange()">
+                        <label for="modeReturn">Return</label>
+                    </div>
+                </div>
+                <button type="button" class="btn-clear-v2" onclick="clearSaleItems()" title="Clear Order">
+                    <i class="ph-trash"></i>
+                </button>
+            </div>
+
+            <div class="customer-selector-v2">
+                <label>Customer</label>
+                <div class="select-wrapper-v2">
                     <i class="ph-user-circle"></i>
-                    <select name="customer_name" required onchange="handleCustomerChange()" class="select-ghost">
-                        <option value="">Walk-in Customer</option>
+                    <select name="customer_name" required onchange="handleCustomerChange()">
+                        <option value="">Select Customer</option>
                         @if (customers != null)
                         {
                             foreach (var c in customers)
@@ -160,45 +150,61 @@
                 </div>
             </div>
 
-            <div class="order-list-canvas" id="saleItemsBody">
+            <div class="checkout-items-v2" id="saleItemsBody">
                 <!-- Items populated by JS -->
             </div>
 
-            <div id="emptyStateV2" class="empty-canvas">
-                <i class="ph-shopping-bag-open"></i>
-                <p>Cart is currently empty</p>
+            <div id="emptyStateV2" class="empty-state-v2">
+                <div class="empty-glow"></div>
+                <i class="ph-shopping-cart-simple"></i>
+                <p>Bag is empty</p>
             </div>
 
-            <div class="cart-footer">
-                <div class="summary-block">
-                    <div class="line">
+            <div class="checkout-footer-v2">
+                <div class="price-summary-v2">
+                    <div class="summary-line">
                         <span>Subtotal</span>
                         <span id="subtotalDisplay">$0.00</span>
                     </div>
-                    <div class="line highlight">
-                        <span>Discounts</span>
-                        <span id="discountDisplay">-$0.00</span>
+                    <div class="summary-line">
+                        <span>Tax (8.25%)</span>
+                        <span id="taxDisplay">$0.00</span>
                     </div>
 
-                    <div id="stockAlert" class="alert-soft" style="display: none;">
+                    
+                    <div id="stockAlert" class="alert-v2" style="display: none;">
                         <i class="ph-warning"></i> <span id="stockAlertMsg"></span>
                     </div>
+
+                    <div class="grand-total-row">
+                        <div class="total-label">Grand Total</div>
+                        <div class="total-value" id="grandTotal">$0.00</div>
+                    </div>
                 </div>
 
-                <div class="grand-total-block">
-                    <div class="total-label">Grand Total</div>
-                    <div class="total-value" id="grandTotal">$0.00</div>
+                <div id="hiddenInputsContainer"></div>
+
+                <div class="web-input-group" style="margin-top: 24px;">
+                    <label style="font-size: 0.8rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Payment Method</label>
+                    <div class="select-wrapper-v2" style="margin-top: 8px;">
+                        <i class="ph-credit-card"></i>
+                        <select name="payment_method" id="posPaymentMethod" required>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="Transfer">Bank Transfer</option>
+                            <option value="Credit">Credit/Pending</option>
+                        </select>
+                    </div>
                 </div>
 
-                <button type="button" class="btn-checkout-pro" onclick="openPaymentModal()">
-                    Complete Payment
-                    <i class="ph-check-circle"></i>
+                <button type="button" class="btn-pay-v2" onclick="submitSaleForm()">
+                    <i class="ph-receipt"></i>
+                    Make Order
                 </button>
+
             </div>
-            
-            <div id="hiddenInputsContainer"></div>
         </form>
-    </aside>
+    </div>
 </div>
 
 <!-- Modern Web Payment Modal -->
@@ -278,16 +284,6 @@
 </div>
 
 <script>
-    function updateClock() {
-        const now = new Date();
-        const clockEl = document.getElementById('terminalClock');
-        if (clockEl) {
-            clockEl.innerText = now.toLocaleTimeString([], { hour12: false });
-        }
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
     let saleItems = [];
     let currentTotal = 0;
     let searchMode = 'name'; // Default search mode
@@ -302,28 +298,27 @@
     }
 
     function filterByCategory(cat) {
-        document.querySelectorAll('.pill-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
         event.currentTarget.classList.add('active');
         
-        const cards = document.querySelectorAll('.pro-product-card');
+        const cards = document.querySelectorAll('.product-card-v2');
         cards.forEach(card => {
             if (cat === 'all') card.style.display = '';
             else if (cat === 'products') {
-                card.style.display = card.dataset.category === 'product' ? '' : 'none';
+                card.style.display = card.dataset.type === 'product' ? '' : 'none';
             }
             else if (cat === 'services') {
-                card.style.display = card.dataset.category === 'service' ? '' : 'none';
+                card.style.display = card.dataset.type === 'service' ? '' : 'none';
             }
             else if (cat === 'fav') {
-                // Example logic for "Regulars" - could be based on a flag, but here we'll use stock or something
-                card.style.display = card.dataset.category === 'product' ? '' : 'none';
+                card.style.display = card.dataset.stock > 10 ? '' : 'none';
             }
         });
     }
 
     function filterProducts() {
         const query = document.getElementById('prodSearch').value.toLowerCase();
-        const cards = document.querySelectorAll('.pro-product-card');
+        const cards = document.querySelectorAll('.product-card-v2');
 
         cards.forEach(card => {
             const name = card.dataset.name;
@@ -349,7 +344,7 @@
         }
     }
 
-    async function addToSaleFromCard(id, name, price, discount, expiry, barcode, maxStock) {
+    async function addToSaleFromCard(id, name, price, discount, expiry, barcode, maxStock, image) {
         const mode = document.querySelector('input[name="transMode"]:checked').value;
         const isReturn = mode === 'return';
         const customerName = document.querySelector('select[name="customer_name"]').value;
@@ -402,10 +397,52 @@
                 discount: discount,
                 expiry_date: expiry || null,
                 maxStock: maxStock,
+                image: image || null,
                 total_price: (price * qtyToAdd) - (discount * qtyToAdd)
             });
         }
         renderSaleItems();
+    }
+
+
+    function filterProducts() {
+        const query = document.getElementById('prodSearch').value.toLowerCase();
+        const cards = document.querySelectorAll('.product-card-v2');
+        
+        cards.forEach(card => {
+            // Always show the "Add New Product" card
+            if (card.innerText.includes("Add New Product")) return;
+            
+            const name = card.getAttribute('data-name');
+            const barcode = card.getAttribute('data-barcode');
+            
+            if (name.includes(query) || barcode.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function filterByCategory(cat, btn) {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        
+        const cards = document.querySelectorAll('.product-card-v2');
+        cards.forEach(card => {
+            if (card.innerText.includes("Add New Product")) return;
+
+            const type = card.getAttribute('data-type');
+            if (cat === 'all') {
+                card.style.display = 'flex';
+            } else if (cat === 'Foods' && type === 'product') {
+                card.style.display = 'flex';
+            } else if (cat === 'Beverages' && type === 'service') {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
     }
 
     function decreaseQty(index) {
@@ -497,7 +534,7 @@
         body.innerHTML = "";
         hiddenContainer.innerHTML = "";
 
-        countDisplay.innerText = `${saleItems.length} item${saleItems.length !== 1 ? 's' : ''}`;
+        countDisplay.innerText = `${saleItems.length} item${saleItems.length !== 1 ? 's' : ''} selected`;
 
         if (saleItems.length === 0) {
             empty.style.display = "flex";
@@ -523,22 +560,27 @@
             grandTotal += lineTotal;
 
             const div = document.createElement('div');
-            div.className = "cart-item";
+            div.className = "item-v2";
             div.innerHTML = `
-                <div class="cart-item-info">
-                    <div class="title">${item.prod_name_service}</div>
-                    <div class="price-unit">$${item.price.toFixed(2)} / unit</div>
+                <div class="item-v2-img">
+                    ${item.image ? `<img src="/product-images/${item.image}" />` : `<i class="ph-package" style="font-size:1.5rem; color:#cbd5e1;"></i>`}
                 </div>
-                <div class="cart-item-actions">
-                    <div class="qty-control-pro">
+                <div class="item-v2-info">
+                    <div class="title">${item.prod_name_service}</div>
+                    <div class="price-sub">$${item.price.toFixed(2)}</div>
+                </div>
+                <div class="item-v2-controls">
+                    <div class="qty-stepper">
                         <button type="button" onclick="decreaseQtyBtn(${index})">-</button>
-                        <span class="qty-val">${Math.abs(item.qty)}</span>
+                        <span>${Math.abs(item.qty)}</span>
                         <button type="button" onclick="increaseQty(${index})">+</button>
                     </div>
-                    <div class="cart-item-total">$${lineTotal.toFixed(2)}</div>
                 </div>
+                <i class="ph-trash btn-remove-item" onclick="removeItem(${index})"></i>
             `;
             body.appendChild(div);
+
+
 
             const prefix = `items[${index}]`;
             hiddenContainer.innerHTML += `
@@ -553,11 +595,15 @@
         });
 
         currentTotal = grandTotal;
+        const taxAmount = grandTotal * 0.0825;
+        const finalTotal = grandTotal + taxAmount;
+
         const format = (v) => (v < 0 ? '-' : '') + '$' + Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2 });
         subtotalSpan.innerText = format(totalSub);
-        discountSpan.innerText = (totalDisc >= 0 ? '-$' : '$') + Math.abs(totalDisc).toLocaleString(undefined, { minimumFractionDigits: 2 });
-        grandTotalSpan.innerText = format(grandTotal);
+        document.getElementById('taxDisplay').innerText = format(taxAmount);
+        grandTotalSpan.innerText = format(finalTotal);
     }
+
 
     function showStockAlert(msg) {
         const el = document.getElementById('stockAlert');
