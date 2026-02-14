@@ -11,8 +11,7 @@
         <div class="canvas-header">
             <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px;">
                 <div>
-                    <h1 style="margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Sales Transaction</h1>
-                    <p style="margin: 2px 0 0; font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">@DateTime.Now.ToString("MMMM dd, yyyy")</p>
+                    <h1 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Sales Transaction</h1>
                 </div>
 
                 <div class="search-bar-v2" style="flex: 1; height: 50px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center;">
@@ -120,7 +119,7 @@
             
             <div class="checkout-header">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin: 0;">Order Detail</h3>
+                    <h3 style="margin: 0; font-size: 1.25rem;">Order Detail</h3>
                     
                     <div style="display: flex; gap: 8px; align-items: center;">
                          <div class="mode-toggle-v2 compact">
@@ -139,7 +138,7 @@
             </div>
 
             <div class="customer-selector-v2">
-                <label>Customer</label>
+                <!-- Removed Label as requested -->
                 <div class="select-wrapper-v2">
                     <i class="ph-user-circle"></i>
                     <select name="customer_name" required onchange="handleCustomerChange()">
@@ -189,7 +188,7 @@
 
                 <div id="hiddenInputsContainer"></div>
 
-                <button type="button" class="btn-pay-v2" onclick="submitSaleForm()">
+                <button type="button" class="btn-pay-v2" onclick="openPaymentModal()">
                     <i class="ph-credit-card"></i>
                     Payment
                 </button>
