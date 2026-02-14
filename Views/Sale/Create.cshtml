@@ -157,7 +157,12 @@
             </div>
 
             <div class="checkout-footer-v2">
-                <div class="price-summary-v2">
+                <button type="button" class="btn-pay-v2" onclick="openPaymentModal()">
+                    Payment
+                    <i class="ph-arrow-right"></i>
+                </button>
+
+                <div class="price-summary-v2" style="margin-top: 24px; margin-bottom: 0;">
                     <div class="summary-line">
                         <span>Items Total</span>
                         <span id="subtotalDisplay">$0.00</span>
@@ -167,22 +172,17 @@
                         <span id="discountDisplay">-$0.00</span>
                     </div>
                     
-                    <div id="stockAlert" class="alert-v2" style="display: none;">
+                    <div id="stockAlert" class="alert-v2" style="display: none; margin-top: 12px;">
                         <i class="ph-warning"></i> <span id="stockAlertMsg"></span>
                     </div>
 
-                    <div class="grand-total-row">
+                    <div class="grand-total-row" style="border-top: 1px solid var(--border); margin-top: 20px; padding-top: 20px;">
                         <div class="total-label">Grand Total</div>
                         <div class="total-value" id="grandTotal">$0.00</div>
                     </div>
                 </div>
-
+                
                 <div id="hiddenInputsContainer"></div>
-
-                <button type="button" class="btn-pay-v2" onclick="openPaymentModal()">
-                    Payment
-                    <i class="ph-arrow-right"></i>
-                </button>
             </div>
         </form>
     </div>
