@@ -9,39 +9,36 @@
     <!-- Center: Product Discovery -->
     <div class="product-canvas">
         <div class="canvas-header">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px;">
                 <div>
-                    <h1 style="margin: 0; font-size: 1.75rem; font-weight: 800; color: var(--text-main);">Sales Transaction</h1>
-                    <p style="margin: 4px 0 0; font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">
-                        @DateTime.Now.ToString("MMMM dd, yyyy - dddd")
-                    </p>
+                    <h1 style="margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Sales Transaction</h1>
+                    <p style="margin: 2px 0 0; font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">@DateTime.Now.ToString("MMMM dd, yyyy")</p>
                 </div>
-                <div class="search-bar-v2" style="width: 400px; height: 50px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
-                    <i class="ph-magnifying-glass" style="margin-left: 16px;"></i>
-                    <input type="text" id="prodSearch" placeholder="Search products..." oninput="filterProducts()" style="padding: 12px; background: transparent; border: none; outline: none; width: 100%; font-weight: 600;">
+
+                <div class="search-bar-v2" style="flex: 1; height: 50px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center;">
+                    <i class="ph-magnifying-glass" style="margin-left: 16px; color: var(--text-muted);"></i>
+                    <input type="text" id="prodSearch" placeholder="Search by name..." oninput="filterProducts()" style="padding: 12px; background: transparent; border: none; outline: none; width: 100%; font-weight: 600; font-size: 0.95rem;">
+                </div>
+                
+                <div class="mode-toggle-v2 compact" style="margin: 0;">
+                    <div class="toggle-pill">
+                        <input type="radio" id="searchName" name="searchMode" value="name" checked onchange="handleSearchModeChange()">
+                        <label for="searchName">Name</label>
+                        <input type="radio" id="searchBarcode" name="searchMode" value="barcode" onchange="handleSearchModeChange()">
+                        <label for="searchBarcode">Barcode</label>
+                    </div>
                 </div>
             </div>
 
             <div class="category-tabs-v2" style="margin-bottom: 32px;">
-                <div class="tab-item active" onclick="filterByCategory('all', this)">All Products</div>
-                <div class="tab-item" onclick="filterByCategory('Foods', this)">Foods</div>
-                <div class="tab-item" onclick="filterByCategory('Beverages', this)">Beverages</div>
-                <div class="tab-item" onclick="filterByCategory('Others', this)">Others</div>
+                <div class="tab-item active" onclick="filterByCategory('all', this)">All</div>
+                <div class="tab-item" onclick="filterByCategory('Foods', this)">Products</div>
+                <div class="tab-item" onclick="filterByCategory('Beverages', this)">Services</div>
             </div>
         </div>
 
 
         <div class="product-grid-v2" id="productGrid">
-            <!-- Add New Product Card (Pic 2 Match) -->
-            <div class="product-card-v2" style="border: 2px dashed #e2e8f0; display: flex; align-items: center; justify-content: center; background: #f8fafc;" onclick="location.href='/Product/Create'">
-                <div style="text-align: center;">
-                    <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                        <i class="ph-plus" style="font-size: 1.5rem; color: var(--success);"></i>
-                    </div>
-                    <span style="font-weight: 700; color: var(--text-muted); font-size: 0.9rem;">Add New Product</span>
-                </div>
-            </div>
-
             @if (products != null)
 
             {
@@ -61,14 +58,21 @@
                             if (!string.IsNullOrEmpty(unitLabel))
                             {
                                 isService = true;
+                                stockValue = 999999;
                             }
                         }
                         else
                         {
-                            // Fallback if regex fails (shouldn't happen with this pattern)
                             isService = true;
-                            unitLabel = p.qty_unit_type;
+                            // Set high stock value for services so they can be added without restriction
+                            stockValue = 999999; 
                         }
+                    }
+                    else 
+                    {
+                        // No qty_unit_type means unlimited/service
+                        isService = true;
+                        stockValue = 999999;
                     }
 
                     <div class="product-card-v2" 
@@ -115,22 +119,23 @@
             <input type="hidden" name="status" id="hiddenStatus" value="Paid" />
             
             <div class="checkout-header">
-                <div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h3 style="margin: 0;">Order Detail</h3>
-                </div>
-            </div>
-
-                <div class="mode-toggle-v2 compact">
-                    <div class="toggle-pill">
-                        <input type="radio" id="modeSale" name="transMode" value="sale" checked onchange="handleModeChange()">
-                        <label for="modeSale">Sale</label>
-                        <input type="radio" id="modeReturn" name="transMode" value="return" onchange="handleModeChange()">
-                        <label for="modeReturn">Return</label>
+                    
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                         <div class="mode-toggle-v2 compact">
+                            <div class="toggle-pill">
+                                <input type="radio" id="modeSale" name="transMode" value="sale" checked onchange="handleModeChange()">
+                                <label for="modeSale">Sale</label>
+                                <input type="radio" id="modeReturn" name="transMode" value="return" onchange="handleModeChange()">
+                                <label for="modeReturn">Return</label>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-clear-v2" onclick="clearSaleItems()" title="Clear Order" style="background: #fee2e2; color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <i class="ph-trash" style="font-size: 1rem;"></i>
+                        </button>
                     </div>
                 </div>
-                <button type="button" class="btn-clear-v2" onclick="clearSaleItems()" title="Clear Order">
-                    <i class="ph-trash"></i>
-                </button>
             </div>
 
             <div class="customer-selector-v2">
@@ -184,22 +189,9 @@
 
                 <div id="hiddenInputsContainer"></div>
 
-                <div class="web-input-group" style="margin-top: 24px;">
-                    <label style="font-size: 0.8rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Payment Method</label>
-                    <div class="select-wrapper-v2" style="margin-top: 8px;">
-                        <i class="ph-credit-card"></i>
-                        <select name="payment_method" id="posPaymentMethod" required>
-                            <option value="Cash">Cash</option>
-                            <option value="Card">Card</option>
-                            <option value="Transfer">Bank Transfer</option>
-                            <option value="Credit">Credit/Pending</option>
-                        </select>
-                    </div>
-                </div>
-
                 <button type="button" class="btn-pay-v2" onclick="submitSaleForm()">
-                    <i class="ph-receipt"></i>
-                    Make Order
+                    <i class="ph-credit-card"></i>
+                    Payment
                 </button>
 
             </div>
@@ -405,21 +397,43 @@
     }
 
 
+    function handleSearchModeChange() {
+        searchMode = document.querySelector('input[name="searchMode"]:checked').value;
+        const input = document.getElementById('prodSearch');
+        input.placeholder = searchMode === 'name' ? "Search by name..." : "Scan or enter barcode...";
+        input.value = '';
+        input.focus();
+        filterProducts();
+    }
+
     function filterProducts() {
         const query = document.getElementById('prodSearch').value.toLowerCase();
+        // searchMode is already updated by handleSearchModeChange or default
         const cards = document.querySelectorAll('.product-card-v2');
         
         cards.forEach(card => {
-            // Always show the "Add New Product" card
-            if (card.innerText.includes("Add New Product")) return;
+            const name = (card.getAttribute('data-name') || "").toLowerCase();
+            const barcode = (card.getAttribute('data-barcode') || "").toLowerCase();
             
-            const name = card.getAttribute('data-name');
-            const barcode = card.getAttribute('data-barcode');
-            
-            if (name.includes(query) || barcode.includes(query)) {
+            if (!query) {
                 card.style.display = 'flex';
+                return;
+            }
+
+            if (searchMode === 'barcode') {
+                 // For barcode, we might want contains or exact. Let's stick to contains for flexibility unless exact is required.
+                 // User said "search by barcode".
+                if (barcode.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
             } else {
-                card.style.display = 'none';
+                if (name.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
             }
         });
     }
@@ -430,14 +444,12 @@
         
         const cards = document.querySelectorAll('.product-card-v2');
         cards.forEach(card => {
-            if (card.innerText.includes("Add New Product")) return;
-
             const type = card.getAttribute('data-type');
             if (cat === 'all') {
                 card.style.display = 'flex';
-            } else if (cat === 'Foods' && type === 'product') {
+            } else if (cat === 'Foods' && type === 'product') { // Foods -> Products
                 card.style.display = 'flex';
-            } else if (cat === 'Beverages' && type === 'service') {
+            } else if (cat === 'Beverages' && type === 'service') { // Beverages -> Services
                 card.style.display = 'flex';
             } else {
                 card.style.display = 'none';
